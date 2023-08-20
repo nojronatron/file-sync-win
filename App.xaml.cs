@@ -16,8 +16,10 @@ namespace file_sync_win
         {
             //  portions of code are thanks to a Gist by Ronnie Overby at https://gist.github.com/ronnieoverby/7568387 
             logger = new Logger();
-            if (logger.isEnabled)
+
+            if (logger.IsEnabled)
             {
+                logger.Data("Application Startup", "Application Startup called");
                 AppDomain.CurrentDomain.UnhandledException += (sig, exc) =>
                     LogUnhandledException((Exception)exc.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
 
@@ -27,17 +29,16 @@ namespace file_sync_win
                 TaskScheduler.UnobservedTaskException += (sig, exc) =>
                     LogUnhandledException(exc.Exception, "TaskScheduler.UnobservedTaskException");
 
-                logger.Data("Application Startup", "Initialize Database called");
-
                 try
                 {
                     logger.Flush();
                 }
                 catch (Exception ex)
                 {
-                    logger.Data("WindowLoading Exception thrown", ex.Message);
+                    logger.Data("Application Startup", $"Exception thrown: {ex.Message}");
                     LogInnerExceptionMessages(ex, "WindowLoading InnerException");
                     logger.Flush();
+                    logger.Dispose();
                     App.Current.Shutdown();
                 }
             }
@@ -49,6 +50,7 @@ namespace file_sync_win
             {
                 LogInnerExceptionMessages(e.InnerException, title);
             }
+
             logger.Data(title, e.Message);
         }
 
@@ -56,6 +58,8 @@ namespace file_sync_win
         {
             // todo: add any final logging here before app exits
             logger.Flush();
+            logger.Dispose();
+            App.Current.Shutdown();
         }
 
         private void LogUnhandledException(Exception exception, string @event)

@@ -9,14 +9,14 @@ namespace file_sync_win.helpers
         private readonly static string LogFileName = "file-sync-win.log";
         private FileInfo LogfileInfo { get; set; }
         private Queue<string> LogEntries = null;
-        public bool isEnabled { get; set; } = false;
+        public bool IsEnabled { get; set; } = false;
 
         public Logger()
         {
             DirectoryInfo rootDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
             LogfileInfo = new FileInfo(Path.Combine(rootDirectory.FullName, LogFileName));
             LogEntries = new Queue<string>();
-            isEnabled = true;
+            IsEnabled = true;
         }
 
         public void Data(string name, string info)
@@ -26,13 +26,24 @@ namespace file_sync_win.helpers
 
         public void Flush()
         {
-            using (StreamWriter streamwriter = File.AppendText(LogfileInfo.FullName))
+            // use stream writer to write each entry in the LogEntries queue until it's empty
+            if (IsEnabled)
             {
-                while (LogEntries.Count > 0)
+                using (StreamWriter sw = LogfileInfo.AppendText())
                 {
-                    streamwriter.WriteLine(LogEntries.Dequeue());
+                    while (LogEntries.Count > 0)
+                    {
+                        sw.WriteLine(LogEntries.Dequeue());
+                    }
                 }
             }
+        }
+
+        public void Dispose()
+        {
+            this.Flush();
+            LogEntries = null;
+            IsEnabled = false;
         }
     }
 }

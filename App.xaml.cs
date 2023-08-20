@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using file_sync_win.helpers;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,5 +10,59 @@ namespace file_sync_win
     /// </summary>
     public partial class App : Application
     {
+        private Logger logger { get; set; } = null;
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            //  portions of code are thanks to a Gist by Ronnie Overby at https://gist.github.com/ronnieoverby/7568387 
+            logger = new Logger();
+            if (logger.isEnabled)
+            {
+                AppDomain.CurrentDomain.UnhandledException += (sig, exc) =>
+                    LogUnhandledException((Exception)exc.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+
+                DispatcherUnhandledException += (sig, exc) =>
+                    LogUnhandledException(exc.Exception, "Application.Current.DispatcherUnhandledException");
+
+                TaskScheduler.UnobservedTaskException += (sig, exc) =>
+                    LogUnhandledException(exc.Exception, "TaskScheduler.UnobservedTaskException");
+
+                logger.Data("Application Startup", "Initialize Database called");
+
+                try
+                {
+                    logger.Flush();
+                }
+                catch (Exception ex)
+                {
+                    logger.Data("WindowLoading Exception thrown", ex.Message);
+                    LogInnerExceptionMessages(ex, "WindowLoading InnerException");
+                    logger.Flush();
+                    App.Current.Shutdown();
+                }
+            }
+        }
+
+        private void LogInnerExceptionMessages(Exception e, string title)
+        {
+            if (e.InnerException != null)
+            {
+                LogInnerExceptionMessages(e.InnerException, title);
+            }
+            logger.Data(title, e.Message);
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            // todo: add any final logging here before app exits
+            logger.Flush();
+        }
+
+        private void LogUnhandledException(Exception exception, string @event)
+        {
+            logger.Data("Unhandled Exception Catcher", "Next log entry will have exception and atEvent.");
+            LogInnerExceptionMessages(exception, @event);
+            logger.Flush();
+        }
     }
 }

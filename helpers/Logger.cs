@@ -4,7 +4,7 @@ using System.IO;
 
 namespace file_sync_win.helpers
 {
-    internal class Logger
+    internal class Logger : IDisposable
     {
         private readonly static string LogFileName = "file-sync-win.log";
         private FileInfo LogfileInfo { get; set; }
@@ -21,7 +21,7 @@ namespace file_sync_win.helpers
 
         public void Data(string name, string info)
         {
-            LogEntries.Enqueue($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} [{name}] {info}");
+            LogEntries.Enqueue($"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{name}] {info}");
         }
 
         public void Flush()

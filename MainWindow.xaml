@@ -32,17 +32,25 @@
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="File Source Path" />
-                    <TextBox x:Name="fileSourcePath" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" />
+                    <TextBox x:Name="fileSourcePath" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
+                </DockPanel>
+                <DockPanel VerticalAlignment="Stretch">
+                    <Label Content="Filter Argument" />
+                    <TextBox x:Name="filterArgument" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: *.mime" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server IP Address" />
-                    <TextBox x:Name="serverIpAddress" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" />
+                    <TextBox x:Name="serverAddress" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 192.168.0.10" />
+                </DockPanel>
+                <DockPanel VerticalAlignment="Stretch">
+                    <Label Content="Server Port" />
+                    <TextBox x:Name="serverPort" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 6001" />
                 </DockPanel>
             </StackPanel>
             <StackPanel Grid.Column="2" VerticalAlignment="Stretch">
                 <Label Content="Last Batch of Data" 
                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
-                <TextBox x:Name="searchTermsTextbox" Text="" Margin="20,5" Height="330" VerticalAlignment="Top" Background="White" />
+                <TextBox x:Name="bibDataPreview" Text="" Margin="20,5" Height="330" VerticalAlignment="Top" Background="White" />
             </StackPanel>
             <StackPanel Grid.Column="3" VerticalAlignment="Stretch">
                 <Button x:Name="startFileMonitor" Content="Start Monitoring Files" Margin="10, 7" Height="25" Click="StartFileMonitor_Click" ToolTip="Starts monitoring the file system for changes." />

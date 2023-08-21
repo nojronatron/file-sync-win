@@ -1,6 +1,8 @@
 ﻿using file_sync_win.helpers;
+using file_sync_win.models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,63 +23,111 @@ namespace file_sync_win
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Logger logger = null;
-        
+        private Logger Logger = null;
+        private FileWatcher FileWatcher = null;
+        private FileWatcherSettings FileWatcherSettings { get; set; }
+
         public MainWindow()
         {
-            logger = new Logger();
-            logger.Data("MainWindow", "MainWindow constructor called");
-            logger.Flush();
+            Logger = new Logger();
+            Logger.Data("MainWindow", "MainWindow constructor called");
+            Logger.Flush();
             InitializeComponent();
+        }
+
+        private void SetupFileWatcher()
+        {
+            string currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "Setting up FileWatcher");
+            FileWatcher = new FileWatcher(Logger);
+            FileWatcher.Configure();
+            Logger.Flush();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "called");
+            var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "called");
             // perform other tasks here
-            logger.Flush();
+            Logger.Flush();
         }
 
         private void StartFileMonitor_Click(object sender, RoutedEventArgs e)
         {
-            logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "Button clicked");
-            logger.Flush();
+            var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "Button clicked");
+
+            try
+            {
+                SetupFileWatcher();
+                Logger.Data(currentMethod, $"FileWatcher Settings: {FileWatcherSettings}");
+                FileWatcher.Start();
+                Logger.Data(currentMethod, "FileWatcher Start Called");
+            } catch (Exception ex)
+            {
+                Logger.Data(currentMethod, $"Exception thrown: {ex.Message}");
+            }
+
+            Logger.Flush();
         }
 
         private void StopFileMonitor_Click(object sender, RoutedEventArgs e)
         {
-            logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "Button clicked");
+            var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "Button clicked");
+
+            try
+            {
+                FileWatcher.Stop();
+                Logger.Data(currentMethod, "FileWatcher Stop Called");
+                FileWatcher.Dispose();
+                Logger.Data(currentMethod, "FileWatcher Dispose Called");
+            }
+            catch (Exception ex)
+            {
+                Logger.Data(currentMethod, $"Exception thrown: {ex.Message}");
+            }
+
+            Logger.Flush();
         }
 
         private void MenuAboutAppInfo_Click(object sender, RoutedEventArgs e)
         {
-            logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "About App Info clicked");
-            logger.Flush();
-            MessageBox.Show("File Sync Win\n\nVersion 0.0,1\n\nCreated by: Jon Rumsey\n\nhttps://github.com/nojronatron", "About File Sync Win", MessageBoxButton.OK, MessageBoxImage.Information);
+            var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "Menu clicked");
+            Logger.Flush();
+            
+            MessageBox.Show(
+                "File Sync Win\n\nVersion 0.0,1\n\nCreated by: Jon Rumsey\n\nhttps://github.com/nojronatron/file-sync-win", 
+                "About File Sync Win", 
+                MessageBoxButton.OK, 
+                MessageBoxImage.Information);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "Window Closing called");
+            //Logger.Data(currentMethod, "Window Closing called");
             //ShutdownAppWindow();
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "Button clicked");
+            var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "Button clicked");
             ShutdownAppWindow();
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
         {
-            logger.Data(System.Reflection.MethodBase.GetCurrentMethod().Name.ToString(), "Menu clicked");
+            var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            Logger.Data(currentMethod, "Menu clicked");
             ShutdownAppWindow();
         }
 
         private void ShutdownAppWindow()
         {
-            logger.Flush();
-            logger.Dispose();
+            Logger.Flush();
+            Logger.Dispose();
             App.Current.Shutdown();
         }
     }

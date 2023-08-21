@@ -33,3 +33,10 @@ See Project Properties and References in the Solution Explorer tree or in the '.
 - The Main UI window will request the address of a 'Database Server' for file storage.
 
 More details to come as the project progresses.
+
+## Implemented Features
+
+- Text-based logging for debugging purposes.
+- Import environment variables to set File Monitoring and Database Server settings.
+- File Monitoring captures filenames of new files only.
+- Implemented UI with menu, basic buttons, and a status bar.

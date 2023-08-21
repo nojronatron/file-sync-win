@@ -23,7 +23,7 @@ namespace file_sync_win.models
             ServerPort = serverPort;
         }
 
-        public void GetSettings()
+        public void GetSettingsFromEnvVars()
         {
             FilePath = Environment.GetEnvironmentVariable("FSW_FILEPATH");
             FileType = Environment.GetEnvironmentVariable("FSW_FILETYPE");

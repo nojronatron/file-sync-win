@@ -33,7 +33,7 @@ namespace file_sync_win.helpers
         {
             string methodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
             Logger.Data(methodName, "Acquiring FileWatcher Settings.");
-            FileWatcherSettings.GetSettings();
+            FileWatcherSettings.GetSettingsFromEnvVars();
             FSWatcher = new FileSystemWatcher(FileWatcherSettings.FilePath, FileWatcherSettings.FileType);
             Logger.Data(methodName, FileWatcherSettings.ToString());
             Logger.Flush();

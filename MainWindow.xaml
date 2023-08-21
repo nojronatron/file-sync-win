@@ -32,11 +32,11 @@
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="File Source Path" />
-                    <TextBox x:Name="fileSourcePath" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" />
+                    <TextBox x:Name="fileSourcePath" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server IP Address" />
-                    <TextBox x:Name="serverIpAddress" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" />
+                    <TextBox x:Name="serverIpAddress" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 192.168.0.10" />
                 </DockPanel>
             </StackPanel>
             <StackPanel Grid.Column="2" VerticalAlignment="Stretch">

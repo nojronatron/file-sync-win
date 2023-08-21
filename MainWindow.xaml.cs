@@ -44,69 +44,6 @@ namespace file_sync_win
             Logger.Flush();
         }
 
-        private void ShutdownFileWatcher()
-        {
-        }
-
-        /* from app.xaml.cs */
-
-        private void Application_Startup(object sender, StartupEventArgs e)
-        {
-            if (Logger.IsEnabled)
-            {
-                Logger.Data("Application Startup", "Application Startup called");
-                AppDomain.CurrentDomain.UnhandledException += (sig, exc) =>
-                    LogUnhandledException((Exception)exc.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
-
-                TaskScheduler.UnobservedTaskException += (sig, exc) =>
-                    LogUnhandledException(exc.Exception, "TaskScheduler.UnobservedTaskException");
-
-                try
-                {
-                    Logger.Flush();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Data("Application Startup", $"Exception thrown: {ex.Message}");
-                    LogInnerExceptionMessages(ex, "WindowLoading InnerException");
-                    Logger.Flush();
-                    Logger.Dispose();
-                    App.Current.Shutdown();
-                }
-            }
-
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
-        }
-
-        private void LogInnerExceptionMessages(Exception e, string title)
-        {
-            if (e.InnerException != null)
-            {
-                LogInnerExceptionMessages(e.InnerException, title);
-            }
-
-            Logger.Data(title, e.Message);
-            Logger.Flush();
-        }
-
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            // todo: add any final logging here before app exits
-            Logger.Flush();
-            Logger.Dispose();
-            App.Current.Shutdown();
-        }
-
-        private void LogUnhandledException(Exception exception, string @event)
-        {
-            Logger.Data("Unhandled Exception Catcher", "Next log entry will have exception and atEvent.");
-            LogInnerExceptionMessages(exception, @event);
-            Logger.Flush();
-        }
-
-        /* end app.xaml.cs */
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;

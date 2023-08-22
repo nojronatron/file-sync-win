@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.CompilerServices;
 using FileSyncDesktop.Models;
+using System.Reflection;
 
 namespace FileSyncDesktop.Helpers
 {
@@ -14,29 +15,87 @@ namespace FileSyncDesktop.Helpers
     {
         private bool disposedValue;
 
-        private Logger Logger { get; set; }
+        private Logger _logger;
         private FileWatcherSettings FileWatcherSettings { get; set;}
         private FileSystemWatcher FSWatcher { get; set; } = null;
 
         /// <summary>
         /// Constructor initializes a FileWatcher instance.
-        /// Invalid or uninitialized parameters will throw an exception.
         /// </summary>
-        /// <param name="logger">Logger Instance</param>
-        public FileWatcher(Logger logger)
+        /// <param name="fileWatcherSettings">FileWatcherSettings object</param>
+        public FileWatcher()
         {
             FileWatcherSettings = new FileWatcherSettings();
-            Logger = logger;
+            _logger = new Logger();
+            _logger.Data("FileWatcher CTOR", "Initializing FileWatcher ** must be configured **.");
+            _logger.Flush();
         }
 
-        public void Configure()
+        public bool Configure()
         {
-            string methodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
-            Logger.Data(methodName, "Acquiring FileWatcher Settings.");
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Acquiring FileWatcher Settings.");
             FileWatcherSettings.GetSettingsFromEnvVars();
-            FSWatcher = new FileSystemWatcher(FileWatcherSettings.FilePath, FileWatcherSettings.FileType);
-            Logger.Data(methodName, FileWatcherSettings.ToString());
-            Logger.Flush();
+
+            bool hasFilePathFilterSettings = HasFilePathFilterSettings();
+            bool hasServerSettings = HasServerSettings();
+
+            if (hasFilePathFilterSettings && hasServerSettings)
+            {
+                _logger.Data(methodName, "Client-side and Server-side variables set. Run as a Client-side instance.");
+                FSWatcher = new FileSystemWatcher(FileWatcherSettings.FilePath, FileWatcherSettings.FileType);
+                Start();
+                _logger.Data(methodName, FileWatcherSettings.ToString());
+                _logger.Flush();
+                return true;
+            }
+
+            if (hasFilePathFilterSettings && !hasServerSettings)
+            {
+                _logger.Data(methodName, "File path and filter settings found. Run as stand-alone watcher only.");
+                FSWatcher = new FileSystemWatcher(FileWatcherSettings.FilePath, FileWatcherSettings.FileType);
+                Start();
+                _logger.Data(methodName, FileWatcherSettings.ToString());
+                _logger.Flush();
+                return true;
+            }
+
+            _logger.Data(methodName, "Not enabling a server-settings only or no-settings configuration.");
+            Stop(); // also calls Dispose() on FSWatcher
+            _logger.Flush();
+            return false;
+        }
+
+        private bool HasServerSettings()
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            if (FileWatcherSettings.ServerAddress != string.Empty && FileWatcherSettings.ServerPort != string.Empty)
+            {
+                _logger.Data(methodName, "Server address and port variables are set.");
+                return true;
+            }
+            else
+            {
+                _logger.Data(methodName, "Server address and/or port variables are NOT set.");
+                return false;
+            }
+        }
+
+        private bool HasFilePathFilterSettings()
+        {
+            var methodName = MethodBase.GetCurrentMethod().Name;
+
+            if (FileWatcherSettings.FilePath != string.Empty && FileWatcherSettings.FileType != string.Empty)
+            {
+                _logger.Data(methodName, "File path and file type settings found!");
+                return true;
+            }
+            else
+            {
+                _logger.Data(methodName, "File path and/or file type settings MISSING!");
+                return false;
+            }
         }
 
         /// <summary>
@@ -45,17 +104,17 @@ namespace FileSyncDesktop.Helpers
         /// <returns></returns>
         public void Start()
         {
-            var methodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            var methodName = MethodBase.GetCurrentMethod().Name;
 
             if (FSWatcher == null)
             {
-                Logger.Data(methodName, "FileSystemWatcher is not initialized (Call Configure first)");
+                _logger.Data(methodName, "FileSystemWatcher is not initialized (Call Configure first)");
             }
             else
             {
                 try
                 {
-                    Logger.Data(methodName, "Starting FileSystemWatcher");
+                    _logger.Data(methodName, "Starting FileSystemWatcher");
                     FSWatcher.Created += OnCreated;
                     FSWatcher.Error += OnError;
                     FSWatcher.IncludeSubdirectories = false;
@@ -63,30 +122,35 @@ namespace FileSyncDesktop.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Logger.Data(methodName, $"An exception occurred: {ex.Message}");
+                    _logger.Data(methodName, $"An exception occurred: {ex.Message}");
                 }
             }
         }
 
         public void Stop()
         {
-            var methodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
+            var methodName = MethodBase.GetCurrentMethod().Name;
 
             if (FSWatcher == null)
             {
-                Logger.Data(methodName, "FileSystemWatcher is not initialized");
+                _logger.Data(methodName, "FileSystemWatcher is not initialized");
             }
             else
             {
                 try
                 {
-                    Logger.Data(methodName, "Stopping FileSystemWatcher");
+                    _logger.Data(methodName, "Stopping FileSystemWatcher");
                     FSWatcher.Created -= OnCreated;
                     FSWatcher.Error -= OnError;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Data(methodName, $"An exception occurred: {ex.Message}");
+                    _logger.Data(methodName, $"An exception occurred: {ex.Message}");
+                }
+                finally
+                {
+                    _logger.Data(methodName, "FileSystemWatcher Dispose() called");
+                    FSWatcher.Dispose();
                 }
             }
         }
@@ -122,7 +186,7 @@ namespace FileSyncDesktop.Helpers
             {
                 if (disposing)
                 {
-                    Logger = null;
+                    _logger = null;
                     FileWatcherSettings = null;
                     FSWatcher = null;
                 }

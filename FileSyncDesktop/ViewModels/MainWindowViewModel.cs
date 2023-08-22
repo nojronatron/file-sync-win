@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
 using FileSyncDesktop.Helpers;
+using FileSyncDesktop.Models;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Screen
     {
+        private FileWatcher _fileWatcher;
         private Logger _logger;
-        private string _fileSourcePath;
 
+        private string _fileSourcePath;
         public string FileSourcePath
         {
             get { return _fileSourcePath; }
@@ -23,7 +25,6 @@ namespace FileSyncDesktop.ViewModels
         }
 
         private string _filterArgument;
-
         public string FilterArgument
         {
             get { return _filterArgument; }
@@ -33,7 +34,6 @@ namespace FileSyncDesktop.ViewModels
         }
 
         private string _serverAddress;
-
         public string ServerAddress
         {
             get { return _serverAddress; }
@@ -43,7 +43,6 @@ namespace FileSyncDesktop.ViewModels
         }
 
         private int _serverPort;
-
         public int ServerPort
         {
             get { return _serverPort; }
@@ -52,13 +51,12 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        private bool _fileMonitorRunning;
-
-        public bool FileMonitorRunning
+        private bool _fileWatcherRunning;
+        public bool FileWatcherRunning
         {
-            get { return _fileMonitorRunning; }
-            set { _fileMonitorRunning = value;
-                NotifyOfPropertyChange(() => FileMonitorRunning);
+            get { return _fileWatcherRunning; }
+            set { _fileWatcherRunning = value;
+                NotifyOfPropertyChange(() => FileWatcherRunning);
                 NotifyOfPropertyChange(() => CanStartFileMonitor);
                 NotifyOfPropertyChange(() => CanStopFileMonitor);
             }
@@ -69,30 +67,35 @@ namespace FileSyncDesktop.ViewModels
             _logger = new Logger();
             _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
             _logger.Flush();
-            FileMonitorRunning = false;
+            FileWatcherRunning = false;
         }
 
         public bool CanStartFileMonitor
         {
-            get { return FileMonitorRunning ? false : true; }
+            get { return FileWatcherRunning ? false : true; }
         }
 
         public bool CanStopFileMonitor
         { 
-            get { return FileMonitorRunning ? true : false; } 
+            get { return FileWatcherRunning ? true : false; } 
         }
 
         public void StartFileMonitor()
         {
-            _logger.Data("StartFileMonitor:", "Starting file monitor.");
-            FileMonitorRunning = true;
+            _logger.Data("StartFileMonitor:", "Initializing file monitor.");
+            _fileWatcher = new FileWatcher();
+            _fileWatcher.Configure();
+
+            _logger.Data("StartFileMonitor:", "tbd.");
+            FileWatcherRunning = true;
             _logger.Flush();
+            return;
         }
 
         public void StopFileMonitor()
         {
             _logger.Data("StopFileMonitor:", "Stopping file monitor.");
-            FileMonitorRunning = false;
+            FileWatcherRunning = false;
             _logger.Flush();
         }
 

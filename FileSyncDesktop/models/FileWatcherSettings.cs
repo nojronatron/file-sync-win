@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace file_sync_win.FileSyncDesktop.Models
+namespace FileSyncDesktop.Models
 {
     internal class FileWatcherSettings
     {

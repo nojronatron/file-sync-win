@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
+using FileSyncDesktop.Helpers;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Screen
     {
+        private Logger _logger;
         private string _fileSourcePath;
 
         public string FileSourcePath
@@ -64,6 +66,9 @@ namespace FileSyncDesktop.ViewModels
 
         public MainWindowViewModel()
         {
+            _logger = new Logger();
+            _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
+            _logger.Flush();
             FileMonitorRunning = false;
         }
 
@@ -79,27 +84,38 @@ namespace FileSyncDesktop.ViewModels
 
         public void StartFileMonitor()
         {
+            _logger.Data("StartFileMonitor:", "Starting file monitor.");
             FileMonitorRunning = true;
+            _logger.Flush();
         }
 
         public void StopFileMonitor()
         {
+            _logger.Data("StopFileMonitor:", "Stopping file monitor.");
             FileMonitorRunning = false;
+            _logger.Flush();
         }
 
         public void MenuFileExit()
         {
+            _logger.Data("MenuFileExit:", "Exiting MainWindowView.");
+            _logger.Flush();
+            _logger.Dispose();
             Application.Current.Shutdown();
         }
 
         public void MenuAbout()
         {
+            string messageBoxTitle = "About File Sync Win";
+            string messageBoxText = "File Sync Win\n\nVersion 0.0,1\n\nCreated by: Jon Rumsey\n\nhttps://github.com/nojronatron/file-sync-win";
+            _logger.Data(messageBoxText, messageBoxTitle);
             MessageBox.Show(
-                "File Sync Win\n\nVersion 0.0,1\n\nCreated by: Jon Rumsey\n\nhttps://github.com/nojronatron/file-sync-win",
-                "About File Sync Win",
+                messageBoxText,
+                messageBoxTitle,
                 MessageBoxButton.OK,
                 MessageBoxImage.Information
             );
+            _logger.Flush();
         }
 
     }

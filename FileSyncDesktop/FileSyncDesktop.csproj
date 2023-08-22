@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{043715F6-EC7E-4082-A1C4-D583180FA8A2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>file_sync_win</RootNamespace>
+    <RootNamespace>FileSyncDesktop</RootNamespace>
     <AssemblyName>FileSyncDesktop</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

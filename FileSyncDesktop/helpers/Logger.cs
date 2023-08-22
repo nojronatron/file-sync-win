@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace file_sync_win.helpers
+namespace file_sync_win.FileSyncDesktop.Helpers
 {
     internal class Logger : IDisposable
     {

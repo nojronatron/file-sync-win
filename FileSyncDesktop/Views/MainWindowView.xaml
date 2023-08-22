@@ -1,18 +1,19 @@
-﻿<Window x:Class="file_sync_win.MainWindow"
+﻿<Window x:Class="FileSyncDesktop.Views.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:file_sync_win"
+        xmlns:local="clr-namespace:FileSyncDesktop.Views"
         mc:Ignorable="d"
-        Title="Winlink Message Synchronizer" Height="450" Width="800" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="MainWindowView" Height="450" Width="800">
+
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch" BorderBrush="Black" HorizontalContentAlignment="Left">
             <MenuItem Header="_File">
-                <MenuItem Header="_Exit" Click="MenuExit_Click" />
+                <MenuItem Header="_Exit" x:Name="MenuFileExit" />
             </MenuItem>
             <Separator Width="10" />
-            <MenuItem Header="_About" Click="MenuAboutAppInfo_Click" />
+            <MenuItem Header="_About" x:Name="MenuAbout" />
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" Background="Beige">
             <StatusBarItem>
@@ -32,19 +33,19 @@
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="File Source Path" />
-                    <TextBox x:Name="fileSourcePath" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
+                    <TextBox x:Name="FileSourcePath" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Filter Argument" />
-                    <TextBox x:Name="filterArgument" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: *.mime" />
+                    <TextBox x:Name="FilterArgument" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: *.mime" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="Server IP Address" />
-                    <TextBox x:Name="serverAddress" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 192.168.0.10" />
+                    <Label Content="Server Name or Address" />
+                    <TextBox x:Name="ServerAddress" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 192.168.0.10" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server Port" />
-                    <TextBox x:Name="serverPort" Text="" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 6001" />
+                    <TextBox x:Name="ServerPort" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 6001" />
                 </DockPanel>
             </StackPanel>
             <StackPanel Grid.Column="2" VerticalAlignment="Stretch">
@@ -53,8 +54,8 @@
                 <TextBox x:Name="bibDataPreview" Text="" Margin="20,5" Height="330" VerticalAlignment="Top" Background="White" />
             </StackPanel>
             <StackPanel Grid.Column="3" VerticalAlignment="Stretch">
-                <Button x:Name="startFileMonitor" Content="Start Monitoring Files" Margin="10, 7" Height="25" Click="StartFileMonitor_Click" ToolTip="Starts monitoring the file system for changes." />
-                <Button x:Name="stopFileMonitor" Content="Stop Monitoring Files" Margin="10, 7" Height="25" Click="StopFileMonitor_Click" ToolTip="Stops monitoring the file system for changes." />
+                <Button x:Name="StartFileMonitor" Margin="10, 7" Height="25" ToolTip="Starts monitoring the file system for changes.">Start Monitoringn Files</Button>
+                <Button x:Name="StopFileMonitor" Margin="10, 7" Height="25" ToolTip="Stops monitoring the file system for changes.">Stop Monitoring Files</Button>
             </StackPanel>
         </Grid>
     </DockPanel>

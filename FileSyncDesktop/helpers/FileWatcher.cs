@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Runtime.CompilerServices;
-using file_sync_win.models;
+using file_sync_win.FileSyncDesktop.Models;
 
-namespace file_sync_win.helpers
+namespace file_sync_win.FileSyncDesktop.Helpers
 {
     internal class FileWatcher : IDisposable
     {

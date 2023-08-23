@@ -8,16 +8,24 @@ using System.Windows;
 using System.Runtime.CompilerServices;
 using FileSyncDesktop.Models;
 using System.Reflection;
+using System.Collections.ObjectModel;
+using Caliburn.Micro;
 
 namespace FileSyncDesktop.Helpers
 {
     internal class FileWatcher : IDisposable
     {
         private bool disposedValue;
-
         private Logger _logger;
-        private FileWatcherSettings FileWatcherSettings { get; set;}
+        private FileWatcherSettings FileWatcherSettings { get; set; }
         private FileSystemWatcher FSWatcher { get; set; } = null;
+
+        private static BindableCollection<string> _fileList = new BindableCollection<string>();
+        public static BindableCollection<string> FileList
+        {
+            get { return _fileList; }
+            set { _fileList = value; }
+        }
 
         /// <summary>
         /// Constructor initializes a FileWatcher instance.
@@ -44,7 +52,6 @@ namespace FileSyncDesktop.Helpers
             {
                 _logger.Data(methodName, "Client-side and Server-side variables set. Run as a Client-side instance.");
                 FSWatcher = new FileSystemWatcher(FileWatcherSettings.FilePath, FileWatcherSettings.FileType);
-                Start();
                 _logger.Data(methodName, FileWatcherSettings.ToString());
                 _logger.Flush();
                 return true;
@@ -54,7 +61,6 @@ namespace FileSyncDesktop.Helpers
             {
                 _logger.Data(methodName, "File path and filter settings found. Run as stand-alone watcher only.");
                 FSWatcher = new FileSystemWatcher(FileWatcherSettings.FilePath, FileWatcherSettings.FileType);
-                Start();
                 _logger.Data(methodName, FileWatcherSettings.ToString());
                 _logger.Flush();
                 return true;
@@ -166,8 +172,29 @@ namespace FileSyncDesktop.Helpers
             Console.WriteLine(message);
             Logger log = new Logger();
             log.Data("OnCreated:", message);
+            FileList.Add(e.FullPath); // static collection
             log.Flush();
             log.Dispose();
+        }
+
+        public string GetFilePath()
+        {
+            return FileWatcherSettings.FilePath;
+        }
+
+        public string GetFileType()
+        {
+            return FileWatcherSettings.FileType;
+        }
+
+        public string GetServerAddress()
+        {
+            return FileWatcherSettings.ServerAddress;
+        }
+
+        public string GetServerPort()
+        {
+            return FileWatcherSettings.ServerPort;
         }
 
         private static void OnError(object sender, ErrorEventArgs e) => LogException(e.GetException());
@@ -176,7 +203,7 @@ namespace FileSyncDesktop.Helpers
         {
             if (ex != null)
             {
-                Console.WriteLine($"Exception: {ex.Message}");  
+                Console.WriteLine($"Exception: {ex.Message}");
             }
         }
 

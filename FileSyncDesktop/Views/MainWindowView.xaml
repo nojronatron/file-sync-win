@@ -51,7 +51,7 @@
             <StackPanel Grid.Column="2" VerticalAlignment="Stretch">
                 <Label Content="Last Batch of Data" 
                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
-                <TextBox x:Name="bibDataPreview" Text="" Margin="20,5" Height="330" VerticalAlignment="Top" Background="White" />
+                <TextBox x:Name="BibDataPreview" Text="" Margin="20,5" Height="330" VerticalAlignment="Top" Background="White" />
             </StackPanel>
             <StackPanel Grid.Column="3" VerticalAlignment="Stretch">
                 <Button x:Name="StartFileMonitor" Margin="10, 7" Height="25" ToolTip="Starts monitoring the file system for changes.">Start Monitoringn Files</Button>

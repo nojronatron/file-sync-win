@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FileSyncDesktop.Models
 {
-    internal class FileWatcherSettings
+    public class FileWatcherSettings
     {
         public string FilePath { get; set; } = string.Empty;
         public string FileType { get; set; } = string.Empty;

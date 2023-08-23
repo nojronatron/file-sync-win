@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,12 +85,40 @@ namespace FileSyncDesktop.ViewModels
         {
             _logger.Data("StartFileMonitor:", "Initializing file monitor.");
             _fileWatcher = new FileWatcher();
-            _fileWatcher.Configure();
 
-            _logger.Data("StartFileMonitor:", "tbd.");
-            FileWatcherRunning = true;
+            if (_fileWatcher.Configure())
+            {
+                _logger.Data("StartFileMonitor:", "Configure returned true.");
+                UpdateConfigProps();
+                _fileWatcher.Start();
+                FileWatcherRunning = true;
+            }
+            else
+            {
+                _logger.Data("StartFileMonitor:", "Configure returned false.");
+                _fileWatcher.Stop();
+                FileWatcherRunning = false;
+            }
+
             _logger.Flush();
             return;
+        }
+
+        private void UpdateConfigProps()
+        {
+            FileSourcePath = _fileWatcher.GetFilePath();
+            FilterArgument = _fileWatcher.GetFileType();
+            ServerAddress = _fileWatcher.GetServerAddress();
+
+            if (int.TryParse(_fileWatcher.GetServerPort(), out int srvrPort))
+            {
+                ServerPort = srvrPort;
+            }
+            else
+            {
+                ServerPort = -1;
+                FileWatcherRunning = false;
+            }
         }
 
         public void StopFileMonitor()

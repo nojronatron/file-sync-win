@@ -20,13 +20,6 @@ namespace FileSyncDesktop.Helpers
         private FileWatcherSettings FileWatcherSettings { get; set; }
         private FileSystemWatcher FSWatcher { get; set; } = null;
 
-        private static BindableCollection<string> _fileList = new BindableCollection<string>();
-        public static BindableCollection<string> FileList
-        {
-            get { return _fileList; }
-            set { _fileList = value; }
-        }
-
         /// <summary>
         /// Constructor initializes a FileWatcher instance.
         /// </summary>
@@ -172,7 +165,6 @@ namespace FileSyncDesktop.Helpers
             Console.WriteLine(message);
             Logger log = new Logger();
             log.Data("OnCreated:", message);
-            FileList.Add(e.FullPath); // static collection
             log.Flush();
             log.Dispose();
         }

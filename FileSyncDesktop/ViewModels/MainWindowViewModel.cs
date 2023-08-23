@@ -16,6 +16,15 @@ namespace FileSyncDesktop.ViewModels
         private FileWatcher _fileWatcher;
         private Logger _logger;
 
+        private string _fileList;
+        public string FileList
+        {
+            get { return _fileList; }
+            set { _fileList = value;
+                NotifyOfPropertyChange(() => FileList);
+            }
+        }
+
         private string _fileSourcePath;
         public string FileSourcePath
         {

@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSyncDesktop.Views"
         mc:Ignorable="d"
-        Title="MainWindowView" Height="450" Width="800">
+        Title="MainWindowView" Width="800" Height="500"
+        >
 
     <DockPanel>
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch" BorderBrush="Black" HorizontalContentAlignment="Left">
@@ -22,41 +23,44 @@
         </StatusBar>
         <Grid DockPanel.Dock="Left" Background="Azure">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100*" />
                 <ColumnDefinition Width="12" />
                 <ColumnDefinition Width="100*" />
-                <ColumnDefinition Width="45*" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="200*" />
+                <ColumnDefinition Width="12" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="275*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Column="1" Grid.Row="1" MinWidth="250">
                 <DockPanel>
-                    <Label Content="System Configuration" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+                    <Label Content="Configuration" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="File Source Path" />
-                    <TextBox x:Name="FileSourcePath" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
+                    <Label Content="Folder Path" />
+                    <TextBox x:Name="FileSourcePath" VerticalAlignment="Center" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="Filter Argument" />
-                    <TextBox x:Name="FilterArgument" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: *.mime" />
+                    <Label Content="File Extension" />
+                    <TextBox x:Name="FilterArgument" VerticalAlignment="Center" Background="White" ToolTip="Example: *.mime" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="Server Name or Address" />
-                    <TextBox x:Name="ServerAddress" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 192.168.0.10" />
+                    <Label Content="Server" />
+                    <TextBox x:Name="ServerAddress" VerticalAlignment="Center" Background="White" ToolTip="Example: 192.168.0.10" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server Port" />
-                    <TextBox x:Name="ServerPort" Margin="20,5" Height="25" VerticalAlignment="Top" Background="White" ToolTip="Example: 6001" />
+                    <TextBox x:Name="ServerPort" VerticalAlignment="Center" Background="White" ToolTip="Example: 6001" />
                 </DockPanel>
+                <StackPanel>
+                    <Button x:Name="ClearConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Clear server and file configuration settings.">Clear</Button>
+                    <Button x:Name="LoadConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Load file and server configuration settings.">Load</Button>
+                    <Button x:Name="SetConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Set manually entered file and server configuration settings.">Set</Button>
+                </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Column="2" VerticalAlignment="Stretch">
-                <Label Content="Last Batch of Data" 
-                           HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
-                <TextBox x:Name="BibDataPreview" Text="" Margin="20,5" Height="330" VerticalAlignment="Top" Background="White" />
-            </StackPanel>
-            <StackPanel Grid.Column="3" VerticalAlignment="Stretch">
-                <Button x:Name="StartFileMonitor" Margin="10, 7" Height="25" ToolTip="Starts monitoring the file system for changes.">Start Monitoringn Files</Button>
-                <Button x:Name="StopFileMonitor" Margin="10, 7" Height="25" ToolTip="Stops monitoring the file system for changes.">Stop Monitoring Files</Button>
-            </StackPanel>
+            
+            <!-- File monitor status and controls view -->
+            <ContentControl Grid.Column="3" Grid.Row="1" MinWidth="252" x:Name="ActiveItem" />
         </Grid>
     </DockPanel>
 </Window>

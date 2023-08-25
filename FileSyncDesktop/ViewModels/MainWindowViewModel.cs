@@ -1,35 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Caliburn.Micro;
+using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
 using FileSyncDesktop.Models;
 
 namespace FileSyncDesktop.ViewModels
 {
-    public class MainWindowViewModel : Screen
+    public class MainWindowViewModel : Conductor<object>
     {
-        private FileWatcher _fileWatcher;
-        private Logger _logger;
+        private ILogger _logger;
+        private IFileWatcherSettings _fileWatcherSettings;
 
-        private string _fileList;
-        public string FileList
+        public MainWindowViewModel(IFileWatcherSettings fileWatcherSettings, ILogger logger)
         {
-            get { return _fileList; }
-            set { _fileList = value;
-                NotifyOfPropertyChange(() => FileList);
-            }
+            _logger = logger;
+            _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
+            _fileWatcherSettings = fileWatcherSettings;
+            _logger.Flush();
         }
 
         private string _fileSourcePath;
         public string FileSourcePath
         {
             get { return _fileSourcePath; }
-            set { _fileSourcePath = value;
+            set
+            {
+                _fileSourcePath = value;
                 NotifyOfPropertyChange(() => FileSourcePath);
             }
         }
@@ -38,7 +42,9 @@ namespace FileSyncDesktop.ViewModels
         public string FilterArgument
         {
             get { return _filterArgument; }
-            set { _filterArgument = value;
+            set
+            {
+                _filterArgument = value;
                 NotifyOfPropertyChange(() => FilterArgument);
             }
         }
@@ -47,7 +53,9 @@ namespace FileSyncDesktop.ViewModels
         public string ServerAddress
         {
             get { return _serverAddress; }
-            set { _serverAddress = value;
+            set
+            {
+                _serverAddress = value;
                 NotifyOfPropertyChange(() => ServerAddress);
             }
         }
@@ -56,93 +64,87 @@ namespace FileSyncDesktop.ViewModels
         public int ServerPort
         {
             get { return _serverPort; }
-            set { _serverPort = value;
+            set
+            {
+                _serverPort = value;
                 NotifyOfPropertyChange(() => ServerPort);
             }
         }
 
-        private bool _fileWatcherRunning;
-        public bool FileWatcherRunning
+        private void NotifyConfigChanged()
         {
-            get { return _fileWatcherRunning; }
-            set { _fileWatcherRunning = value;
-                NotifyOfPropertyChange(() => FileWatcherRunning);
-                NotifyOfPropertyChange(() => CanStartFileMonitor);
-                NotifyOfPropertyChange(() => CanStopFileMonitor);
-            }
-        }
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Notifying.");
+            FileSourcePath = _fileWatcherSettings.FilePath;
+            FilterArgument = _fileWatcherSettings.FileType;
+            ServerAddress = _fileWatcherSettings.ServerAddress;
 
-        public MainWindowViewModel()
-        {
-            _logger = new Logger();
-            _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
-            _logger.Flush();
-            FileWatcherRunning = false;
-        }
-
-        public bool CanStartFileMonitor
-        {
-            get { return FileWatcherRunning ? false : true; }
-        }
-
-        public bool CanStopFileMonitor
-        { 
-            get { return FileWatcherRunning ? true : false; } 
-        }
-
-        public void StartFileMonitor()
-        {
-            _logger.Data("StartFileMonitor:", "Initializing file monitor.");
-            _fileWatcher = new FileWatcher();
-
-            if (_fileWatcher.Configure())
-            {
-                _logger.Data("StartFileMonitor:", "Configure returned true.");
-                UpdateConfigProps();
-                _fileWatcher.Start();
-                FileWatcherRunning = true;
-            }
-            else
-            {
-                _logger.Data("StartFileMonitor:", "Configure returned false.");
-                _fileWatcher.Stop();
-                FileWatcherRunning = false;
-            }
-
-            _logger.Flush();
-            return;
-        }
-
-        private void UpdateConfigProps()
-        {
-            FileSourcePath = _fileWatcher.GetFilePath();
-            FilterArgument = _fileWatcher.GetFileType();
-            ServerAddress = _fileWatcher.GetServerAddress();
-
-            if (int.TryParse(_fileWatcher.GetServerPort(), out int srvrPort))
+            if (int.TryParse(_fileWatcherSettings.ServerPort, out int srvrPort))
             {
                 ServerPort = srvrPort;
             }
             else
             {
                 ServerPort = -1;
-                FileWatcherRunning = false;
             }
-        }
 
-        public void StopFileMonitor()
-        {
-            _logger.Data("StopFileMonitor:", "Stopping file monitor.");
-            FileWatcherRunning = false;
             _logger.Flush();
         }
 
-        public void MenuFileExit()
+        public bool CanClearConfiguration()
         {
-            _logger.Data("MenuFileExit:", "Exiting MainWindowView.");
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Hard-coded TRUE.");
             _logger.Flush();
-            _logger.Dispose();
-            Application.Current.Shutdown();
+            return true;
+        }
+
+        public bool CanLoadConfiguration()
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Hard-coded TRUE.");
+            _logger.Flush();
+            return true;
+        }
+
+        public bool CanSetConfiguration()
+        {
+            // todo: implement if this becomes necessary
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Hard-coded FALSE.");
+            _logger.Flush();
+            return false;
+        }
+
+        public void ClearConfiguration()
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Called.");
+            _fileWatcherSettings.RemoveFileSettings();
+            _fileWatcherSettings.RemoveServerSettings();
+            NotifyConfigChanged();
+            _logger.Flush();
+        }
+
+        // set environment variables into the settings object
+        public void LoadConfiguration()
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Called.");
+            _logger.Flush();
+            _fileWatcherSettings.GetSettingsFromEnvVars();
+            NotifyConfigChanged();
+            ActivateItem(new FileListViewModel(_fileWatcherSettings, _logger));
+        }
+
+        // set user-entered configuration items into the settings object
+        public void SetConfiguration()
+        {
+            // todo: implement if this becomes necessary
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Called.");
+            _logger.Data(methodName, "NO IMPLEMENTATION!");
+            _logger.Flush();
         }
 
         public void MenuAbout()
@@ -157,6 +159,15 @@ namespace FileSyncDesktop.ViewModels
                 MessageBoxImage.Information
             );
             _logger.Flush();
+        }
+
+        public void MenuFileExit()
+        {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Exiting MainWindowView.");
+            _logger.Flush();
+            _logger.Dispose();
+            Application.Current.Shutdown();
         }
 
     }

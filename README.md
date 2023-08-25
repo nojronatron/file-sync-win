@@ -19,6 +19,7 @@ The timeline of this project is not set, other than I _hope_ to have something s
 - Windows 7 or later
 - Dot NET Framework 4.7 or later
 - Build tools (Visual Studio 2022 or later)
+- ASP.NET Core 6.0 (for Web API)
 
 ## Build
 
@@ -34,6 +35,10 @@ See Project Properties and References in the Solution Explorer tree or in the '.
 
 ## UI Descriptions
 
+More details to come as the project progresses.
+
+### Desktop
+
 - Logging is automatic and can be turned on or off. For now during early development it will be on. The Log file will be stored in the same directory as the executable (dev: `bin\Debug').
 - The Main UI window displays an existing configuration stored in Environment Variables when Load Configuration is clicked.
 - Main UI has a Clear Configuration button - for future use.
@@ -42,7 +47,38 @@ See Project Properties and References in the Solution Explorer tree or in the '.
 - File List UI is a child view that will appear when a configuration has the LOADed or SET.
 - File List UI has Start and Stop buttons to control the File Monitoring process.
 
-More details to come as the project progresses.
+### Web
+
+- Web UI accepts a POST request with a JSON body containing a collection of records with named elements.
+- Response will be either a 200 OK or 400 Bad Request.
+- Future: Controller sends received, validated data to the data interface.
+
+Example JSON Body in POST request:
+
+```json
+[
+  {
+    "bibNumber": 138,
+    "action": "IN",
+    "bibTimeOfDay": 1713,
+    "dayOfMonth": 11,
+    "location": "WR"
+  },
+  {
+    "bibNumber": 187,
+    "action": "IN",
+    "bibTimeOfDay": 1713,
+    "dayOfMonth": 11,
+    "location": "WR"
+  }
+]
+```
+
+### Startup
+
+Since this is a multiple-project solution, in the future the Startup configuration must select both the Desktop and Web projects to run.
+
+For now, select either API or Desktop as the Startup project when running the Solution.
 
 ## Usage
 

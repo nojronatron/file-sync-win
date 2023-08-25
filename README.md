@@ -4,7 +4,9 @@ Windows based data synchronization tool for Winlink-based messages.
 
 ## Overview
 
-This is an exploratory project using WPF and .NET Framework 4.x to create a Windows-based data synchronization tool for Winlink-based messages.  The goal is to create a tool that can be used to synchronize messages between a Winlink account and a local file system.
+This is an exploratory project using WPF and .NET Framework 4.x to create a Windows-based data synchronization tool for Winlink-based messages.
+
+The goal is to create a tool that can be used to synchronize messages between a Winlink account and a local file system, although simple file tracking could be configured to monitor any file types at any valid file path (mounted paths are not guaranteed safe).
 
 The prime directive of this tool is to synchronize Winlink message content from multiple LAN-connected computers, and then prep the data to be stored in a database of some type.
 
@@ -15,7 +17,7 @@ The timeline of this project is not set, other than I _hope_ to have something s
 ## Requirements
 
 - Windows 7 or later
-- Dot NET Framework 4.7.2 or later
+- Dot NET Framework 4.7 or later
 - Build tools (Visual Studio 2022 or later)
 
 ## Build
@@ -24,15 +26,42 @@ Use Visual Studio 2022 or later to build the solution.
 
 ## Dependencies
 
+- Dot NET Framework 4.7.2
+- Autofac v7.1.0.0
+- Caliburn.Micro v3.2.0
+
 See Project Properties and References in the Solution Explorer tree or in the '.proj' file.
+
+## UI Descriptions
+
+- Logging is automatic and can be turned on or off. For now during early development it will be on. The Log file will be stored in the same directory as the executable (dev: `bin\Debug').
+- The Main UI window displays an existing configuration stored in Environment Variables when Load Configuration is clicked.
+- Main UI has a Clear Configuration button - for future use.
+- Main UI has a Store Configuration button that will save manually-entered configuration items. This is a future feature.
+- Main UI Server-side settings are for future use and are not utilized at this time.
+- File List UI is a child view that will appear when a configuration has the LOADed or SET.
+- File List UI has Start and Stop buttons to control the File Monitoring process.
+
+More details to come as the project progresses.
 
 ## Usage
 
-- Logging is automatic and can be turned on or off. For now during early development it will be on. The Log file will be stored in the same directory as the executable (dev: `bin\Debug').
-- The Main UI window will request the location of Winlink Message files.
-- The Main UI window will request the address of a 'Database Server' for file storage.
+1. Build the project.
+1. Either Run in Visual Studio Debug mode, or run the EXE file directly ensuring any DLLs are in the same path as the EXE for example all within 'bin/debug' directory.
+1. Create new ENVIRONMENT VARIABLES: `FSW_FILEPATH`, `FSW_FILETYPE`, and `FSW_SERVERADDR`
+1. LOAD the configuration.
+1. START the File Monitoring process.
+1. Copy files into the configured PATH.
+1. Review the Logfile to see the file name(s) that were detected.
 
-More details to come as the project progresses.
+```powershell
+> dir env:
+...
+FSW_FILEPATH                   D:\filemon\messages
+FSW_FILETYPE                   *.mime
+FSW_SERVERADDR                 "localhost:6001"
+...
+```
 
 ## Implemented Features
 
@@ -40,3 +69,5 @@ More details to come as the project progresses.
 - Import environment variables to set File Monitoring and Database Server settings.
 - File Monitoring captures filenames of new files only.
 - Implemented UI with menu, basic buttons, and a status bar.
+- Model, View, ViewModel architecture to better manage user interface and interactions.
+- Inversion of Control (IoC, Dependency Injection) to decrease coupling between components and better manage instance lifecycles.

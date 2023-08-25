@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace file_sync_win.helpers
+namespace FileSyncDesktop.Helpers
 {
-    internal class Logger : IDisposable
+    public class Logger : IDisposable, ILogger
     {
         private readonly static string LogFileName = "file-sync-win.log";
         private FileInfo LogfileInfo { get; set; }

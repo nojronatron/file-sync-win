@@ -102,8 +102,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Collections\BibRecordCollection.cs" />
     <Compile Include="Collections\FileListCollection.cs" />
     <Compile Include="Helpers\ILogger.cs" />
+    <Compile Include="Models\BibRecord.cs" />
     <Compile Include="Models\IFileWatcherSettings.cs" />
     <Compile Include="ViewModels\FileListViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

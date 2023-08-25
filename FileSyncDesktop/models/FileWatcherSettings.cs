@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FileSyncDesktop.Models
 {
-    public class FileWatcherSettings
+    public class FileWatcherSettings : IFileWatcherSettings
     {
         public string FilePath { get; set; } = string.Empty;
         public string FileType { get; set; } = string.Empty;
@@ -31,6 +31,11 @@ namespace FileSyncDesktop.Models
             ServerPort = Environment.GetEnvironmentVariable("FSW_SERVERPORT");
         }
 
+        public bool HasFileSettings()
+        {
+            return FilePath != string.Empty && FileType.Substring(0, 2) == "*.";
+        }
+
         public void RemoveFileSettings()
         {
             FilePath = string.Empty;
@@ -41,6 +46,11 @@ namespace FileSyncDesktop.Models
         {
             ServerAddress = string.Empty;
             ServerPort = string.Empty;
+        }
+
+        public bool HasServerSettings()
+        {
+            return ServerAddress != string.Empty && ServerPort != string.Empty;
         }
 
         public override string ToString()

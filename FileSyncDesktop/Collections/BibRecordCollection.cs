@@ -8,16 +8,12 @@ using System.Threading.Tasks;
 
 namespace FileSyncDesktop.Collections
 {
-    public class BibRecordCollection : ICollection<BibRecord>
+    public class BibRecordCollection : ICollection<BibRecord>, IBibRecordCollection
     {
         // wrapper class represents a List of BibRecord objects
 
         IList<BibRecord> _BibRecords = new List<BibRecord>();
         public BibRecordCollection() { }
-        public BibRecordCollection(IList<BibRecord> BibRecords)
-        {
-            _BibRecords = BibRecords;
-        }
 
         public int Count => throw new NotImplementedException();
 

@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
 using FileSyncDesktop.Models;
 using FileSyncDesktop.ViewModels;
@@ -29,7 +30,9 @@ namespace FileSyncDesktop
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILogger, Logger>()
-                .Singleton<IFileWatcherSettings, FileWatcherSettings>();
+                .Singleton<IFileWatcherSettings, FileWatcherSettings>()
+                .Singleton<IFileDataProcessor, FileDataProcessor>()
+                .Singleton<IBibRecordCollection, BibRecordCollection>();
 
             foreach (var assembly in SelectAssemblies())
             {

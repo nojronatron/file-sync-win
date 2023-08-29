@@ -15,9 +15,9 @@ namespace FileSyncDesktop.Collections
         IList<BibRecord> _BibRecords = new List<BibRecord>();
         public BibRecordCollection() { }
 
-        public int Count => throw new NotImplementedException();
+        public int Count => _BibRecords.Count;
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly => false;
 
         public void Add(BibRecord item)
         {
@@ -56,6 +56,19 @@ namespace FileSyncDesktop.Collections
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _BibRecords.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Collection size:").Append(_BibRecords.Count).Append('\n');
+
+            foreach (var ApiBibRecord in _BibRecords)
+            {
+                sb.Append(ApiBibRecord.ToString()).Append('\n');
+            }
+
+            return sb.ToString();
         }
     }
 }

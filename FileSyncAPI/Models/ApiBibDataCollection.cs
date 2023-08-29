@@ -59,7 +59,7 @@ namespace FileSyncAPI.Models
 
         public override string ToString()
         {
-            StringBuilder sb = new();
+            StringBuilder sb = new StringBuilder();
             sb.Append("Collection size:").Append(_apiBibRecords.Count).Append('\n');
 
             foreach (var ApiBibRecord in _apiBibRecords)

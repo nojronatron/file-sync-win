@@ -107,3 +107,5 @@ FSW_SERVERADDR                 "localhost:6001"
 - Implemented UI with menu, basic buttons, and a status bar.
 - Model, View, ViewModel architecture to better manage user interface and interactions.
 - Inversion of Control (IoC, Dependency Injection) to decrease coupling between components and better manage instance lifecycles.
+- ASP.NET Core 6 Web API to receive POST request data.
+- Collections used for in-memory storage of bib data.

@@ -30,9 +30,11 @@ namespace FileSyncDesktop.Helpers
         /// ProcessFile() does not distinguish between a file that has data matching the Regex pattern and one that does not.
         /// </summary>
         /// <param name="fileName"></param>
-        public bool ProcessFile(string fileName)
+        public Library.Helpers.BibRecords ProcessFile(string fileName)
         {
             _logger.Data("FileDataProcessor.ProcessFile", "Called!");
+            var bibRecords = new Library.Helpers.BibRecords();
+
             AsyncProcessFile asyncPF = async (string _filename) =>
             {
                 return await Task.Run(() =>
@@ -41,7 +43,6 @@ namespace FileSyncDesktop.Helpers
                     {
                         // delay before reading the file for about 500 milliseconds
                         Thread.Sleep(500);
-
                         string[] dataLines = File.ReadAllLines(_filename);
 
                         foreach (var dataLine in dataLines)
@@ -57,12 +58,21 @@ namespace FileSyncDesktop.Helpers
                                 string bibTimeOfDay = data[2];
                                 int dayOfMonth = int.Parse(data[3]);
                                 string shortLocation = data[4];
-                                var temp = new BibRecord(bibNumber, action, bibTimeOfDay, dayOfMonth, shortLocation);
-                                _bibRecordCollection.Add(temp);
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry added to collection: {temp.ToString()}");
+                                var temp = new Library.Models.BibRecordModel()
+                                {
+                                    BibNumber = bibNumber,
+                                    Action = action, 
+                                    BibTimeOfDay = bibTimeOfDay, 
+                                    DayOfMonth = dayOfMonth, 
+                                    ShortLocation = shortLocation
+                                };
+
+                                bibRecords.bibRecords.Add(temp);
+                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry added: {temp}");
                             }
                         }
 
+                        _bibRecordCollection.AddRange(bibRecords.bibRecords);
                         _logger.Flush();
                         return true;
                     }
@@ -75,7 +85,8 @@ namespace FileSyncDesktop.Helpers
                 });
             };
 
-            return asyncPF(fileName).Result;
+            var result = asyncPF(fileName).Result;
+            return bibRecords;
         }
     }
 }

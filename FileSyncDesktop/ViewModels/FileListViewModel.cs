@@ -1,9 +1,12 @@
 ﻿using Caliburn.Micro;
 using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
+using FileSyncDesktop.Library.Api;
+using FileSyncDesktop.Library.Helpers;
 using FileSyncDesktop.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +21,7 @@ namespace FileSyncDesktop.ViewModels
         private FileSystemWatcher _fsWatcher;
         private IFileDataProcessor _fileDataProcessor;
         private IFileWatcherSettings _fileWatcherSettings;
+        private IBibReportEndpoint _bibReportEndpoint;
 
         private FileListCollection _fileList;
         public FileListCollection FileList
@@ -54,11 +58,14 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
+        [ImportingConstructor]
         public FileListViewModel(
+            IBibReportEndpoint bibReportEndpoint,
             IFileDataProcessor fileDataProcessor,
             IFileWatcherSettings fileWatcherSettings,
             ILogger logger)
         {
+            _bibReportEndpoint = bibReportEndpoint;
             _logger = logger;
             _logger.Data("FileListViewModel", "Initializing.");
             _fileWatcherSettings = fileWatcherSettings;
@@ -203,7 +210,7 @@ namespace FileSyncDesktop.ViewModels
             _logger.Flush();
         }
 
-        private void OnCreated(object sender, FileSystemEventArgs e)
+        private async void OnCreated(object sender, FileSystemEventArgs e)
         {
             // sender is Syste.IO.FileSystemWatcher
             string fullPath = e.FullPath;
@@ -212,9 +219,18 @@ namespace FileSyncDesktop.ViewModels
             _fileList.Add(fullPath);
             _fileListText = _fileList.ToString();
             NotifyOfPropertyChange(() => FileListText);
-            bool fileProcessed = _fileDataProcessor.ProcessFile(fullPath);
-            string logMessage = $"FileDataProcessor.ProcessFile() returned {fileProcessed}";
+            var fileProcessed = _fileDataProcessor.ProcessFile(fullPath);
+            string logMessage = $"FileDataProcessor.ProcessFile() returned {fileProcessed.bibRecords}";
             _logger.Data("OnCreated:", logMessage);
+
+            if (fileProcessed.bibRecords.Count > 0)
+            {
+                string subMessage = $"Posting Bib Report to server with {fileProcessed.bibRecords.Count} records.";
+                _logger.Data("OnCreated:", subMessage);
+                await _bibReportEndpoint.PostBibReport(fileProcessed);
+            }
+
+            _logger.Data("OnCreated:", "Exiting.");
             _logger.Flush();
         }
 

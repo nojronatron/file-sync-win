@@ -20,20 +20,24 @@ namespace FileSyncAPI.Controllers
 
         // POST api/<BibRecordsController>
         [HttpPost(Name = "PostBibRecords")]
-        public IActionResult Create(IEnumerable<ApiBibRecord> values)
+        public IActionResult Create(ApiBibRecords values)
         {
             _logger.LogInformation("PostBibRecords called with arg {values}.", values);
 
-            foreach (var value in values)
+            if (values.BibRecords != null && values.BibRecords.Count > 0)
             {
-                _logger.LogInformation("Current value is {value}", value);
-                try
+                foreach (ApiBibRecord value in values.BibRecords)
                 {
-                    _apiBibRecords.Add(value);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Exception {e} thrown.", e);
+                    _logger.LogInformation("Current value is {value}", value);
+
+                    try
+                    {
+                        _apiBibRecords.Add(value);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError("Exception {e} thrown.", e);
+                    }
                 }
             }
 

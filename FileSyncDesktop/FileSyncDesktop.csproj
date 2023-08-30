@@ -57,6 +57,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -108,7 +109,6 @@
     <Compile Include="Helpers\FileDataProcessor.cs" />
     <Compile Include="Helpers\IFileDataProcessor.cs" />
     <Compile Include="Helpers\ILogger.cs" />
-    <Compile Include="Models\BibRecord.cs" />
     <Compile Include="Models\IFileWatcherSettings.cs" />
     <Compile Include="ViewModels\FileListViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -159,6 +159,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileSyncDesktop.Library\FileSyncDesktop.Library.csproj">
+      <Project>{6AF3693C-C39A-44B8-A51A-45663948F674}</Project>
+      <Name>FileSyncDesktop.Library</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

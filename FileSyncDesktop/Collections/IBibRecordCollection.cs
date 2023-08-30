@@ -1,4 +1,6 @@
-﻿using FileSyncDesktop.Models;
+﻿using FileSyncDesktop.Library.Helpers;
+using FileSyncDesktop.Library.Models;
+using FileSyncDesktop.Models;
 using System.Collections.Generic;
 
 namespace FileSyncDesktop.Collections
@@ -8,11 +10,12 @@ namespace FileSyncDesktop.Collections
         int Count { get; }
         bool IsReadOnly { get; }
 
-        void Add(BibRecord item);
+        void Add(BibRecordModel item);
+        void AddRange(IList<BibRecordModel> items);
         void Clear();
-        bool Contains(BibRecord item);
-        void CopyTo(BibRecord[] array, int arrayIndex);
-        IEnumerator<BibRecord> GetEnumerator();
-        bool Remove(BibRecord item);
+        bool Contains(BibRecordModel item);
+        void CopyTo(BibRecordModel[] array, int arrayIndex);
+        IEnumerator<BibRecordModel> GetEnumerator();
+        bool Remove(BibRecordModel item);
     }
 }

@@ -1,4 +1,5 @@
-﻿using FileSyncDesktop.Models;
+﻿using FileSyncDesktop.Library.Models;
+using FileSyncDesktop.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,24 +9,35 @@ using System.Threading.Tasks;
 
 namespace FileSyncDesktop.Collections
 {
-    public class BibRecordCollection : ICollection<BibRecord>
+    public class BibRecordCollection : ICollection<BibRecordModel>, IBibRecordCollection
     {
         // wrapper class represents a List of BibRecord objects
 
-        IList<BibRecord> _BibRecords = new List<BibRecord>();
+        IList<BibRecordModel> _BibRecords = new List<BibRecordModel>();
         public BibRecordCollection() { }
-        public BibRecordCollection(IList<BibRecord> BibRecords)
-        {
-            _BibRecords = BibRecords;
-        }
 
-        public int Count => throw new NotImplementedException();
+        public int Count => _BibRecords.Count;
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly => false;
 
-        public void Add(BibRecord item)
+        public void Add(BibRecordModel item)
         {
             _BibRecords.Add(item);
+        }
+
+        /// <summary>
+        /// Accepts an ICollection of BibRecord instances and adds it to this collection.
+        /// </summary>
+        /// <param name="items"></param>
+        public void AddRange(IList<BibRecordModel> items)
+        {
+            if (items != null && items.Count > 0)
+            {
+                foreach (var item in items)
+                {
+                    _BibRecords.Add(item);
+                }
+            }
         }
 
         public void Clear()
@@ -33,12 +45,12 @@ namespace FileSyncDesktop.Collections
             _BibRecords.Clear();
         }
 
-        public bool Contains(BibRecord item)
+        public bool Contains(BibRecordModel item)
         {
             return _BibRecords.Contains(item);
         }
 
-        public void CopyTo(BibRecord[] array, int arrayIndex)
+        public void CopyTo(BibRecordModel[] array, int arrayIndex)
         {
             foreach (var BibRecord in _BibRecords)
             {
@@ -47,12 +59,12 @@ namespace FileSyncDesktop.Collections
             }
         }
 
-        public IEnumerator<BibRecord> GetEnumerator()
+        public IEnumerator<BibRecordModel> GetEnumerator()
         {
             return _BibRecords.GetEnumerator();
         }
 
-        public bool Remove(BibRecord item)
+        public bool Remove(BibRecordModel item)
         {
             return _BibRecords.Remove(item);
         }
@@ -60,6 +72,19 @@ namespace FileSyncDesktop.Collections
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _BibRecords.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Collection size:").Append(_BibRecords.Count).Append('\n');
+
+            foreach (var ApiBibRecord in _BibRecords)
+            {
+                sb.Append(ApiBibRecord.ToString()).Append('\n');
+            }
+
+            return sb.ToString();
         }
     }
 }

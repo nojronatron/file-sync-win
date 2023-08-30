@@ -1,9 +1,12 @@
 ﻿using Caliburn.Micro;
 using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
+using FileSyncDesktop.Library.Api;
+using FileSyncDesktop.Library.Helpers;
 using FileSyncDesktop.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +19,9 @@ namespace FileSyncDesktop.ViewModels
     {
         private ILogger _logger;
         private FileSystemWatcher _fsWatcher;
+        private IFileDataProcessor _fileDataProcessor;
         private IFileWatcherSettings _fileWatcherSettings;
+        private IBibReportEndpoint _bibReportEndpoint;
 
         private FileListCollection _fileList;
         public FileListCollection FileList
@@ -25,7 +30,18 @@ namespace FileSyncDesktop.ViewModels
             set
             {
                 _fileList = value;
-                NotifyOfPropertyChange(() => FileList);
+                NotifyOfPropertyChange(() => FileListText);
+            }
+        }
+
+        private string _fileListText;
+        public string FileListText
+        {
+            get { return _fileListText; }
+            set
+            {
+                _fileListText = value;
+                NotifyOfPropertyChange(() => FileListText);
             }
         }
 
@@ -42,12 +58,18 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        public FileListViewModel(IFileWatcherSettings fileWatcherSettings, ILogger logger)
+        [ImportingConstructor]
+        public FileListViewModel(
+            IBibReportEndpoint bibReportEndpoint,
+            IFileDataProcessor fileDataProcessor,
+            IFileWatcherSettings fileWatcherSettings,
+            ILogger logger)
         {
-            _fileList = new FileListCollection();
+            _bibReportEndpoint = bibReportEndpoint;
             _logger = logger;
             _logger.Data("FileListViewModel", "Initializing.");
             _fileWatcherSettings = fileWatcherSettings;
+            _fileDataProcessor = fileDataProcessor;
             _logger.Flush();
         }
 
@@ -140,6 +162,7 @@ namespace FileSyncDesktop.ViewModels
                 try
                 {
                     _logger.Data(methodName, "Starting FileSystemWatcher");
+                    _fileList = new FileListCollection();
                     _fsWatcher.Created += OnCreated;
                     _fsWatcher.Error += OnError;
                     _fsWatcher.IncludeSubdirectories = false;
@@ -187,29 +210,41 @@ namespace FileSyncDesktop.ViewModels
             _logger.Flush();
         }
 
-        private static void OnCreated(object sender, FileSystemEventArgs e)
+        private async void OnCreated(object sender, FileSystemEventArgs e)
         {
-            string message = $"Created: {e.FullPath}";
-            Console.WriteLine(message);
-            Logger log = new Logger();
-            log.Data("OnCreated:", message);
-            log.Flush();
-            log.Dispose();
+            // sender is Syste.IO.FileSystemWatcher
+            string fullPath = e.FullPath;
+            string message = $"Created: {fullPath}";
+            _logger.Data("OnCreated:", message);
+            _fileList.Add(fullPath);
+            _fileListText = _fileList.ToString();
+            NotifyOfPropertyChange(() => FileListText);
+            var fileProcessed = _fileDataProcessor.ProcessFile(fullPath);
+            string logMessage = $"FileDataProcessor.ProcessFile() returned {fileProcessed.bibRecords}";
+            _logger.Data("OnCreated:", logMessage);
+
+            if (fileProcessed.bibRecords.Count > 0)
+            {
+                string subMessage = $"Posting Bib Report to server with {fileProcessed.bibRecords.Count} records.";
+                _logger.Data("OnCreated:", subMessage);
+                await _bibReportEndpoint.PostBibReport(fileProcessed);
+            }
+
+            _logger.Data("OnCreated:", "Exiting.");
+            _logger.Flush();
         }
 
-        private static void OnError(object sender, ErrorEventArgs e)
+        private void OnError(object sender, ErrorEventArgs e)
         {
             if (sender is FileListViewModel)
             {
                 (sender as FileListViewModel).LogException(e.GetException());
-            } 
+            }
             else
             {
                 // I'm not sure how this would happen, but if it does it will get logged
-                Logger log = new Logger();
-                log.Data("OnError - UNKNOWN CALLER", e.GetException().Message);
-                log.Flush();
-                log.Dispose();
+                _logger.Data("OnError - UNKNOWN CALLER", e.GetException().Message);
+                _logger.Flush();
             }
         }
 
@@ -240,6 +275,5 @@ namespace FileSyncDesktop.ViewModels
                 _logger.Data("[LogException]", $"Received exception {ex.Message}");
             }
         }
-
     }
 }

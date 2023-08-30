@@ -7,7 +7,7 @@ namespace FileSyncAPI.Models
     {
         // wrapper class represents a List of ApiBibRecord objects
 
-        IList<ApiBibRecord> _apiBibRecords = new List<ApiBibRecord>();
+        readonly IList<ApiBibRecord> _apiBibRecords = new List<ApiBibRecord>();
         public ApiBibDataCollection() { }
         public ApiBibDataCollection(IList<ApiBibRecord> ApiBibRecords)
         {

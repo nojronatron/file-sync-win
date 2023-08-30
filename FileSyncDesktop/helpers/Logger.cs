@@ -42,8 +42,8 @@ namespace FileSyncDesktop.Helpers
         public void Dispose()
         {
             this.Flush();
-            LogEntries = null;
             IsEnabled = false;
+            LogEntries = null;
         }
     }
 }

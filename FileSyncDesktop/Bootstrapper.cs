@@ -1,5 +1,7 @@
 ﻿using Caliburn.Micro;
+using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
+using FileSyncDesktop.Library.Api;
 using FileSyncDesktop.Models;
 using FileSyncDesktop.ViewModels;
 using System;
@@ -24,12 +26,17 @@ namespace FileSyncDesktop
 
         protected override void Configure()
         {
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IBibReportEndpoint, BibReportEndpoint>();
+
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILogger, Logger>()
-                .Singleton<IFileWatcherSettings, FileWatcherSettings>();
+                .Singleton<IFileWatcherSettings, FileWatcherSettings>()
+                .Singleton<IFileDataProcessor, FileDataProcessor>()
+                .Singleton<IBibRecordCollection, BibRecordCollection>()
+                .Singleton<IAPIHelper, APIHelper>();
 
             foreach (var assembly in SelectAssemblies())
             {
@@ -40,11 +47,23 @@ namespace FileSyncDesktop
                     .ForEach(viewModelType => _container.RegisterPerRequest(
                         viewModelType, viewModelType.ToString(), viewModelType));
             }
+
+            // todo: try base.configure()
+            base.Configure();
         }
 
         protected override object GetInstance(Type serviceType, string key)
         {
-            return _container.GetInstance(serviceType, key);
+            var instance = _container.GetInstance(serviceType, key);
+            if (instance != null)
+            {
+                return instance;
+            } else
+            {
+                throw new InvalidOperationException("Could not locate any instances.");
+            }
+
+            //return _container.GetInstance(serviceType, key);
         }
 
         protected override IEnumerable<object> GetAllInstances(Type serviceType)

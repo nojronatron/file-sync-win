@@ -7,7 +7,5 @@
         int? BibTimeOfDay { get; set; }
         int? DayOfMonth { get; set; }
         string Location { get; set; }
-
-        string ToString();
     }
 }

@@ -1,3 +1,4 @@
+using FileSyncAPI.Helpers;
 using FileSyncAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // custom services
-builder.Services.AddSingleton<IApiBibDataCollection, ApiBibDataCollection>();
+builder.Services
+    .AddSingleton<IApiBibDataCollection, ApiBibDataCollection>()
+    .AddSingleton<IRecordLogger, RecordLogger>();
+
 // configure logging service
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 var app = builder.Build();
 

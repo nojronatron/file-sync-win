@@ -396,3 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/FileSyncAPI/Received-Bib-Reports.txt

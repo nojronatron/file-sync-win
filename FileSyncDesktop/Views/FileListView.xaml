@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch">
             <Label Content="Files Detected" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
-            <TextBox x:Name="BibDataPreview" Text="" Height="200" Width="400" 
+            <TextBox x:Name="FileListText" Text="" Height="200" Width="400" 
                      VerticalAlignment="Top" Background="White" />
         </StackPanel>
         <DockPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center">

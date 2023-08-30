@@ -4,34 +4,95 @@ Windows based data synchronization tool for Winlink-based messages.
 
 ## Overview
 
-This is an exploratory project using WPF and .NET Framework 4.x to create a Windows-based data synchronization tool for Winlink-based messages.
+This is an exploratory project using WPF and .NET.
 
-The goal is to create a tool that can be used to synchronize messages between a Winlink account and a local file system, although simple file tracking could be configured to monitor any file types at any valid file path (mounted paths are not guaranteed safe).
+The goal is to create a tool that can be used to synchronize message data between a Winlink Express instance and another computer.
 
-The prime directive of this tool is to synchronize Winlink message content from multiple LAN-connected computers, and then prep the data to be stored in a database of some type.
+The 'Server' portion of program listens for notifications and receives a listing of bib reports, recording them to a log file.
 
-Initially the database will be something like SQLite, but that could change based on the needs of the end-users of this software.
+The 'Client' portion of the program watches a directory and, whenever a new file is created, parses the content and stores only bib data fields `bibNumber`, `action`, `timeOfDay`, `dayOfMonth`, and `location`, and also finds a configured server instance and ships the data to it.
 
-The timeline of this project is not set, other than I _hope_ to have something stable and usable before May 2024.
+The prime directive of this tool is to synchronize Winlink message content between LAN-connected computers in a hub-and-spoke type format, and then prep the data to be stored in a logfile and/or database.
+
+## Usage and Behavior
+
+### Simple Usage Walkthrough
+
+1. Copy the executable (and any DLLs) to a directory on the computer that has Winlink Express installed (Client).
+1. Find the directory where Winlink Express stores its message files.
+1. Run the Executable and enter the directory path into the UI.
+1. Copy the executable (and any DLLs) to a directory on the computer that will receive the data (Server).
+1. Run the Executable.
+1. Optional: If the Server also has Winlink Express installed, find the directory where Winlink Express stores its message files and enter it into the directory path in the UI.
+1. Client (required), Server (optional): Enter the Server's IP address and port number into the UI. *Note* This step may change in a future version.
+1. Both: Click the 'Start' button to begin the File Monitoring process.
+1. Client: Whenever a new file is created in the configured directory, the Client UI will display the filename and a log entry will be created in the same directory as the executable.
+1. Whenever the client detects a new file with bib data, it will send that data to the configured Server.
+1. Server: When the bib data is received, it will be logged to a file in the same directory as the executable.
+
+### Other Behavior Expectations
+
+- Existing files in the configured path will NOT be detected or processed in any way.
+- New files that do not contain bib data will NOT be processed in any way.
+- The Server address and port configuration is completely optional. If it is not configured, the Client will still function normally, but will only send data to the local log file.
+- Simply launching the application starts the Server component, so no additional steps are required to configure or start it (at this time).
+
+### Security and Data Privacy
+
+- Avoid directly connecting your computer(s) to the Internet.
+- Always use a router with a firewall and only allow the inbound and outbound traffic that is absolutely necessary.
+- This application does NOT use authentication. In the future this feature may be added.
+- This application does NOT use encryption.
+
+## Project Status
+
+- The timeline of this project is not set.
+- My goal to have something purposeful, stable, and well tested before the end of May 2024.
+- Additional features will be added as they are deemed necessary and as time permits.
+
+## Project Structure
+
+### Server Side
+
+- Web server (ASP.NET Core 6) to receive POST requests from the client.
+- Data processing to validate the data and format it for storage.
+- Data interface to receive data from the web server.
+- Data storage component for saving to a log file, and potentially a database.
+- No user interface is planned.
+- SwaggerUI for testing the API (technically, any client can be used to send data to the API but it must follow the expected JSON format).
+
+### Client Side
+
+- File monitoring component to watch a directory for new files.
+- File parsing component to extract bib data from each detected new file.
+- Data processing to validate the data and format it for storage and transmission.
+- Data storage component for saving to a log file.
+- Data transmission component to send data to the server.
+- User interface to display the current configuration and status of the file monitoring process.
 
 ## Requirements
 
+### Run
+
 - Windows 7 or later
-- Dot NET Framework 4.7 or later
+- Dot NET Framework 4.7
+- Dot NET 6
+
+### Build
+
 - Build tools (Visual Studio 2022 or later)
+- Dot NET Framework 4.7 (for Desktop and user interface)
 - ASP.NET Core 6.0 (for Web API)
+- Refresh NuGet packages (see Dependencies below)
 
-## Build
+### Dependencies
 
-Use Visual Studio 2022 or later to build the solution.
-
-## Dependencies
-
-- Dot NET Framework 4.7.2
 - Autofac v7.1.0.0
 - Caliburn.Micro v3.2.0
+- Swashbuckle.AspNetCore (Swagger) v6.5.0
+- Newtonsoft.Json v13.0.0.0
 
-See Project Properties and References in the Solution Explorer tree or in the '.proj' file.
+See Project Properties and References in the Solution Explorer tree or in the Project file.
 
 ## UI Descriptions
 
@@ -39,56 +100,76 @@ More details to come as the project progresses.
 
 ### Desktop
 
-- Logging is automatic and can be turned on or off. For now during early development it will be on. The Log file will be stored in the same directory as the executable (dev: `bin\Debug').
-- The Main UI window displays an existing configuration stored in Environment Variables when Load Configuration is clicked.
-- Main UI has a Clear Configuration button - for future use.
-- Main UI has a Store Configuration button that will save manually-entered configuration items. This is a future feature.
-- Main UI Server-side settings are for future use and are not utilized at this time.
-- File List UI is a child view that will appear when a configuration has the LOADed or SET.
-- File List UI has Start and Stop buttons to control the File Monitoring process.
+- Logging is automatic and can be turned on or off (during development it can be programmatically changed but not in the UI).
+- The Log file will be stored in the same directory as the executable (dev: `bin\Debug'; end user: whatever directory the EXE and associated DLL files are in).
+- Main UI: A window displays an existing configuration stored in Environment Variables when Load Configuration is clicked. This may change in a future version.
+- Main UI: The Clear Configuration button removes the configuration for File Monitoring and the configured Server Address.
+- Main UI: The Store Configuration button saves manually-entered configuration items. This is a future feature.
+- Main UI: Server address should be like `http://localhost:5432  1`. During early development this is acquired through Environment Variables. This configuration could change in a future version.
+- File List UI: Appears when a configuration has be loaded or set using the LOAD or SET buttons.
+- File List UI Start and Stop buttons: Control the File Monitoring process. Note: If files are created while the process is stopped, those files will not be processed.
 
 ### Web
 
+- SwaggerUI is available at `server-address:port/swagger/index.html`.
+
+### Web Non UI Components
+
 - Web UI accepts a POST request with a JSON body containing a collection of records with named elements.
-- Response will be either a 200 OK or 400 Bad Request.
-- Future: Controller sends received, validated data to the data interface.
+- Response will be either a `200 OK` or `400 Bad Request`. Do not expect additional information in the response body or headers.
 
 Example JSON Body in POST request:
 
 ```json
-[
-  {
-    "bibNumber": 138,
-    "action": "IN",
-    "bibTimeOfDay": 1713,
-    "dayOfMonth": 11,
-    "location": "WR"
-  },
-  {
-    "bibNumber": 187,
-    "action": "IN",
-    "bibTimeOfDay": 1713,
-    "dayOfMonth": 11,
-    "location": "WR"
-  }
+{
+    "bibRecords": [
+		{
+			"bibNumber": 123,
+			"action": "OUT",
+			"bibTimeOfDay": 1713,
+			"dayOfMonth": 11,
+			"location": "WR"
+		},
+		{
+			"bibNumber": 234,
+			"action": "IN",
+			"bibTimeOfDay": 0913,
+			"dayOfMonth": 12,
+			"location": "CH"
+		},
+		{
+			"bibNumber": 123,
+			"action": "DNF",
+			"bibTimeOfDay": 0003,
+			"dayOfMonth": 13,
+			"location": "TS"
+		}
+	]
 ]
 ```
 
+## Development
+
 ### Startup
 
-Since this is a multiple-project solution, in the future the Startup configuration must select both the Desktop and Web projects to run.
+Since this is a multiple-project solution the Startup configuration must be done in a particular order:
 
-For now, select either API or Desktop as the Startup project when running the Solution.
+1. FileSyncAPI (ASP.NET)
+2. FileSyncDesktop.Library (Dot NET Library)
+3. FileSyncDesktop (WPF)
 
 ## Usage
 
 1. Build the project.
 1. Either Run in Visual Studio Debug mode, or run the EXE file directly ensuring any DLLs are in the same path as the EXE for example all within 'bin/debug' directory.
 1. Create new ENVIRONMENT VARIABLES: `FSW_FILEPATH`, `FSW_FILETYPE`, and `FSW_SERVERADDR`
-1. LOAD the configuration.
-1. START the File Monitoring process.
-1. Copy files into the configured PATH.
-1. Review the Logfile to see the file name(s) that were detected.
+1. Desktop UI: Click LOAD to load the configuration.
+1. Desktop UI: Click START Monitoring Files button to trigger the File Monitoring process.
+1. Copy files with (and without) valid and invalid bib number entries into the configured PATH.
+1. Review the Files Detected window to see the detected file names.
+1. Review the Log file to see the results of the File Monitoring process including errors, notification, and bib numbers.
+
+Example ENVIRONMENT VARIABLES:
 
 ```powershell
 > dir env:
@@ -101,9 +182,16 @@ FSW_SERVERADDR                 "localhost:6001"
 
 ## Implemented Features
 
+- Responsive Desktop User Interface.
 - Text-based logging for debugging purposes.
-- Import environment variables to set File Monitoring and Database Server settings.
-- File Monitoring captures filenames of new files only.
-- Implemented UI with menu, basic buttons, and a status bar.
-- Model, View, ViewModel architecture to better manage user interface and interactions.
-- Inversion of Control (IoC, Dependency Injection) to decrease coupling between components and better manage instance lifecycles.
+- Text-based logging of received Bib Records (server-side).
+- Semi-automated import of environment variables to set File Monitoring and Server configurations.
+- File Monitoring captures filenames of *created* files only.
+- 
+### Nerdy Features
+
+- MVVM (Model, View, ViewModel) architecture to better manage user interface and interactions.
+- Inversion of Control (IoC aka Dependency Injection) to decrease coupling between components, to better manage instance lifecycles, and simplify testing.
+- Dot NET Framework 4.7 for Desktop UI support back to Windows 7.
+- ASP.NET Core 6 Web API for receiving and properly handling REST POST request payloads.
+- Collections used for in-memory storage while app is running.

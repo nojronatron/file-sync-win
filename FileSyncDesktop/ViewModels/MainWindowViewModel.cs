@@ -10,20 +10,26 @@ using System.Windows;
 using Caliburn.Micro;
 using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
+using FileSyncDesktop.Library.Api;
 using FileSyncDesktop.Models;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
-        private ILogger _logger;
+        private IFileDataProcessor _fileDataProcessor;
         private IFileWatcherSettings _fileWatcherSettings;
+        private ILogger _logger;
 
-        public MainWindowViewModel(IFileWatcherSettings fileWatcherSettings, ILogger logger)
+        public MainWindowViewModel(
+            IFileDataProcessor fileDataProcessor,
+            IFileWatcherSettings fileWatcherSettings, 
+            ILogger logger)
         {
             _logger = logger;
             _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
             _fileWatcherSettings = fileWatcherSettings;
+            _fileDataProcessor = fileDataProcessor;
             _logger.Flush();
         }
 
@@ -134,7 +140,8 @@ namespace FileSyncDesktop.ViewModels
             _logger.Flush();
             _fileWatcherSettings.GetSettingsFromEnvVars();
             NotifyConfigChanged();
-            ActivateItem(new FileListViewModel(_fileWatcherSettings, _logger));
+            // use Conductor to launch chile ViewModels
+            ActivateItem(IoC.Get<FileListViewModel>());
         }
 
         // set user-entered configuration items into the settings object

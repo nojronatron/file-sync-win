@@ -7,7 +7,7 @@ namespace FileSyncAPI.Models
     {
         // wrapper class represents a List of ApiBibRecord objects
 
-        IList<ApiBibRecord> _apiBibRecords = new List<ApiBibRecord>();
+        readonly IList<ApiBibRecord> _apiBibRecords = new List<ApiBibRecord>();
         public ApiBibDataCollection() { }
         public ApiBibDataCollection(IList<ApiBibRecord> ApiBibRecords)
         {
@@ -59,7 +59,7 @@ namespace FileSyncAPI.Models
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.Append("Collection size:").Append(_apiBibRecords.Count).Append('\n');
 
             foreach (var ApiBibRecord in _apiBibRecords)

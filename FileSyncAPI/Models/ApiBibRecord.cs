@@ -9,10 +9,5 @@ namespace FileSyncAPI.Models
         public int? BibTimeOfDay { get; set; } = null;
         public int? DayOfMonth { get; set; } = null;
         public string Location { get; set; } = string.Empty;
-
-        public override string ToString()
-        {
-            return $"ApiBibRecord: {BibNumber}, {Action}, {BibTimeOfDay}, {DayOfMonth}, {Location}";
-        }
     }
 }

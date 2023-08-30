@@ -2,6 +2,6 @@
 {
     public class ApiBibRecords
     {
-        public List<ApiBibRecord>? BibRecords { get; set; }
+        public List<ApiBibRecord>? BibRecords { get; set; } = null;
     }
 }

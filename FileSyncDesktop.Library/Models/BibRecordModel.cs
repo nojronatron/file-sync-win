@@ -12,6 +12,6 @@ namespace FileSyncDesktop.Library.Models
         public string Action { get; set; }
         public string BibTimeOfDay { get; set; }
         public int DayOfMonth { get; set; }
-        public string ShortLocation { get; set; }
+        public string Location { get; set; }
     }
 }

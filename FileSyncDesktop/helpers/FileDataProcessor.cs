@@ -64,7 +64,7 @@ namespace FileSyncDesktop.Helpers
                                     Action = action, 
                                     BibTimeOfDay = bibTimeOfDay, 
                                     DayOfMonth = dayOfMonth, 
-                                    ShortLocation = shortLocation
+                                    Location = shortLocation
                                 };
 
                                 bibRecords.bibRecords.Add(temp);

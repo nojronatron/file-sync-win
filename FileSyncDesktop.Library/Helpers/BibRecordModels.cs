@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace FileSyncDesktop.Library.Helpers
 {
-    public class BibRecords
+    public class BibRecordModels
     {
-        public List<BibRecordModel> bibRecords { get; set; } = new List<BibRecordModel>();
+        public List<BibRecordModel> BibRecords { get; set; } = new List<BibRecordModel>();
 
         public string ToJson()
         {

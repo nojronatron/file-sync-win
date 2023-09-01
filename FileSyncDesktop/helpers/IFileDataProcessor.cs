@@ -2,6 +2,6 @@
 {
     public interface IFileDataProcessor
     {
-        Library.Helpers.BibRecords ProcessFile(string fileName);
+        Library.Helpers.BibRecordModels ProcessFile(string fileName);
     }
 }

@@ -220,7 +220,7 @@ namespace FileSyncDesktop.ViewModels
             NotifyOfPropertyChange(() => FileListText);
             var fileProcessed = _fileDataProcessor.ProcessFile(fullPath);
 
-            if (fileProcessed.bibRecords.Count < 1)
+            if (fileProcessed.BibRecords.Count < 1)
             {
                 _logger.Data("OnCreated", "No records found in file. Not posting to server.");
                 return;

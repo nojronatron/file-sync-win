@@ -15,7 +15,7 @@ namespace FileSyncDesktop.Library.Api
             _apiHelper = apiHelper;
         }
 
-        public async Task<Tuple<bool, string>> PostBibReport(BibRecords bibRecords)
+        public async Task<Tuple<bool, string>> PostBibReport(BibRecordModels bibRecords)
         {
             var requestUri = "/api/BibRecords";
             var httpContent = new StringContent(bibRecords.ToJson(), Encoding.UTF8, "application/json");

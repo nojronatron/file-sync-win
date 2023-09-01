@@ -28,10 +28,10 @@ namespace FileSyncDesktop.Helpers
         /// ProcessFile() does not distinguish between a file that has data matching the Regex pattern and one that does not.
         /// </summary>
         /// <param name="fileName"></param>
-        public Library.Helpers.BibRecords ProcessFile(string fileName)
+        public Library.Helpers.BibRecordModels ProcessFile(string fileName)
         {
             _logger.Data("FileDataProcessor.ProcessFile", "Called!");
-            var bibRecords = new Library.Helpers.BibRecords();
+            var bibRecords = new Library.Helpers.BibRecordModels();
 
             AsyncProcessFile asyncPF = async (string _filename) =>
             {
@@ -65,13 +65,13 @@ namespace FileSyncDesktop.Helpers
                                     Location = shortLocation
                                 };
 
-                                bibRecords.bibRecords.Add(temp);
+                                bibRecords.BibRecords.Add(temp);
                                 _logger.Data("FileDataProcessor.ProcessFile", $"Bib entry added to local list.");
                             }
                         }
 
-                        _bibRecordCollection.AddRange(bibRecords.bibRecords);
-                        string processedFilesCount = $"Processed {bibRecords.bibRecords.Count} bibs.";
+                        _bibRecordCollection.AddRange(bibRecords.BibRecords);
+                        string processedFilesCount = $"Processed {bibRecords.BibRecords.Count} bibs.";
                         _logger.Data("ProcessFile", processedFilesCount);
                         _logger.Flush();
                         return true;
@@ -90,9 +90,9 @@ namespace FileSyncDesktop.Helpers
             return bibRecords;
         }
 
-        private void WriteBibRecordsToLocalLog(Library.Helpers.BibRecords records)
+        private void WriteBibRecordsToLocalLog(Library.Helpers.BibRecordModels records)
         {
-            if (records.bibRecords.Count < 1)
+            if (records.BibRecords.Count < 1)
             {
                 return;
             }
@@ -102,7 +102,7 @@ namespace FileSyncDesktop.Helpers
 
             using (StreamWriter sw = logFileInfo.AppendText())
             {
-                foreach (var record in records.bibRecords)
+                foreach (var record in records.BibRecords)
                 {
                     var entry = $"{record}";
                     sw.WriteLine(entry);

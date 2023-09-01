@@ -6,6 +6,6 @@ namespace FileSyncDesktop.Library.Api
 {
     public interface IBibReportEndpoint
     {
-        Task<Tuple<bool, string>> PostBibReport(BibRecords bibRecords);
+        Task<Tuple<bool, string>> PostBibReport(BibRecordModels bibRecords);
     }
 }

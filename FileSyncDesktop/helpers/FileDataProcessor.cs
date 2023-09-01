@@ -9,9 +9,9 @@ namespace FileSyncDesktop.Helpers
 {
     public class FileDataProcessor : IFileDataProcessor
     {
-        private static string pattern = @"\d{1,3}\t(OUT|IN|DROP)\t\d{4}\t\d{1,2}\t\w{2}";
-        private IBibRecordCollection _bibRecordCollection;
-        private IRmzLogger _logger;
+        private static readonly string pattern = @"\d{1,3}\t(OUT|IN|DROP)\t\d{4}\t\d{1,2}\t\w{2}";
+        private readonly IBibRecordCollection _bibRecordCollection;
+        private readonly IRmzLogger _logger;
         private readonly int _delay = 500;
         private readonly string _localRecordsLog = "LocalRecordsLog.txt";
 
@@ -33,7 +33,7 @@ namespace FileSyncDesktop.Helpers
             _logger.Data("FileDataProcessor.ProcessFile", "Called!");
             var bibRecords = new Library.Helpers.BibRecordModels();
 
-            AsyncProcessFile asyncPF = async (string _filename) =>
+            async Task<bool> asyncPF(string _filename)
             {
                 return await Task.Run(() =>
                 {
@@ -83,7 +83,7 @@ namespace FileSyncDesktop.Helpers
                         return false;
                     }
                 });
-            };
+            }
 
             var result = asyncPF(fileName).Result;
             WriteBibRecordsToLocalLog(bibRecords);

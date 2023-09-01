@@ -1,6 +1,4 @@
-﻿using FileSyncDesktop.Library.Helpers;
-using FileSyncDesktop.Library.Models;
-using FileSyncDesktop.Models;
+﻿using FileSyncDesktop.Library.Models;
 using System.Collections.Generic;
 
 namespace FileSyncDesktop.Collections

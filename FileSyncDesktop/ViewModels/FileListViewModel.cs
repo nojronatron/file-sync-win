@@ -211,10 +211,10 @@ namespace FileSyncDesktop.ViewModels
 
         private async void OnCreated(object sender, FileSystemEventArgs e)
         {
-            // sender is Syste.IO.FileSystemWatcher
+            // sender is System.IO.FileSystemWatcher
             string fullPath = e.FullPath;
             string message = $"Created: {fullPath}";
-            _logger.Data("OnCreated:", message);
+            _logger.Data("OnCreated", message);
             _fileList.Add(fullPath);
             _fileListText = _fileList.ToString();
             NotifyOfPropertyChange(() => FileListText);

@@ -109,6 +109,7 @@
     <Compile Include="Collections\BibRecordCollection.cs" />
     <Compile Include="Collections\FileListCollection.cs" />
     <Compile Include="Collections\IBibRecordCollection.cs" />
+    <Compile Include="Collections\IFileListCollection.cs" />
     <Compile Include="Helpers\FileDataProcessor.cs" />
     <Compile Include="Helpers\IFileDataProcessor.cs" />
     <Compile Include="Helpers\IRmzLogger.cs" />

@@ -6,6 +6,7 @@ namespace FileSyncDesktop.Helpers
 {
     public class RmzLogger : IRmzLogger
     {
+        // todo: move LofFileName to a configuration entry
         private readonly static string LogFileName = "file-sync-win.log";
         private FileInfo LogfileInfo { get; set; }
         private Queue<string> LogEntries = null;

@@ -49,7 +49,7 @@ namespace FileSyncDesktop.Helpers
 
                             if (match.Success)
                             {
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry detected.");
+                                _logger.Data("FileDataProcessor.ProcessFile", $"Bib entry detected.");
                                 string[] data = dataLine.Split('\t');
                                 int bibNumber = int.Parse(data[0]);
                                 string action = data[1];
@@ -66,7 +66,7 @@ namespace FileSyncDesktop.Helpers
                                 };
 
                                 bibRecords.bibRecords.Add(temp);
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry added to local list.");
+                                _logger.Data("FileDataProcessor.ProcessFile", $"Bib entry added to local list.");
                             }
                         }
 

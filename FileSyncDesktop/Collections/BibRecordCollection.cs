@@ -1,18 +1,13 @@
 ﻿using FileSyncDesktop.Library.Models;
-using FileSyncDesktop.Models;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FileSyncDesktop.Collections
 {
     public class BibRecordCollection : ICollection<BibRecordModel>, IBibRecordCollection
     {
         // wrapper class represents a List of BibRecord objects
-
         IList<BibRecordModel> _BibRecords = new List<BibRecordModel>();
         public BibRecordCollection() { }
 

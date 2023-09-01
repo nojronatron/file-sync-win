@@ -16,7 +16,7 @@ namespace FileSyncDesktop.ViewModels
             IRmzLogger logger)
         {
             _logger = logger;
-            _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
+            _logger.Data("MainWindowViewModel", "MainWindowViewModel created.");
             _fileWatcherSettings = fileWatcherSettings;
             _logger.Flush();
         }

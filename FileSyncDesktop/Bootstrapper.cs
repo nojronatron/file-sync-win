@@ -34,6 +34,7 @@ namespace FileSyncDesktop
                 .Singleton<IFileWatcherSettings, FileWatcherSettings>()
                 .Singleton<IFileDataProcessor, FileDataProcessor>()
                 .Singleton<IBibRecordCollection, BibRecordCollection>()
+                .Singleton<IFileListCollection, FileListCollection>()
                 .Singleton<IAPIHelper, APIHelper>();
 
             foreach (var assembly in SelectAssemblies())

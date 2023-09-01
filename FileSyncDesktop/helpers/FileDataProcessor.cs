@@ -1,10 +1,6 @@
 ﻿using FileSyncDesktop.Collections;
-using FileSyncDesktop.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,9 +11,11 @@ namespace FileSyncDesktop.Helpers
     {
         private static string pattern = @"\d{1,3}\t(OUT|IN|DROP)\t\d{4}\t\d{1,2}\t\w{2}";
         private IBibRecordCollection _bibRecordCollection;
-        private ILogger _logger;
+        private IRmzLogger _logger;
+        private readonly int _delay = 500;
+        private readonly string _localRecordsLog = "LocalRecordsLog.txt";
 
-        public FileDataProcessor(IBibRecordCollection bibRecordCollection, ILogger logger)
+        public FileDataProcessor(IBibRecordCollection bibRecordCollection, IRmzLogger logger)
         {
             _bibRecordCollection = bibRecordCollection;
             _logger = logger;
@@ -42,7 +40,7 @@ namespace FileSyncDesktop.Helpers
                     try
                     {
                         // delay before reading the file for about 500 milliseconds
-                        Thread.Sleep(500);
+                        Thread.Sleep(_delay);
                         string[] dataLines = File.ReadAllLines(_filename);
 
                         foreach (var dataLine in dataLines)
@@ -51,7 +49,7 @@ namespace FileSyncDesktop.Helpers
 
                             if (match.Success)
                             {
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Regex Match in {dataLine}");
+                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry detected.");
                                 string[] data = dataLine.Split('\t');
                                 int bibNumber = int.Parse(data[0]);
                                 string action = data[1];
@@ -61,18 +59,20 @@ namespace FileSyncDesktop.Helpers
                                 var temp = new Library.Models.BibRecordModel()
                                 {
                                     BibNumber = bibNumber,
-                                    Action = action, 
-                                    BibTimeOfDay = bibTimeOfDay, 
-                                    DayOfMonth = dayOfMonth, 
+                                    Action = action,
+                                    BibTimeOfDay = bibTimeOfDay,
+                                    DayOfMonth = dayOfMonth,
                                     Location = shortLocation
                                 };
 
                                 bibRecords.bibRecords.Add(temp);
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry added: {temp}");
+                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry added to local list.");
                             }
                         }
 
                         _bibRecordCollection.AddRange(bibRecords.bibRecords);
+                        string processedFilesCount = $"Processed {bibRecords.bibRecords.Count} bibs.";
+                        _logger.Data("ProcessFile", processedFilesCount);
                         _logger.Flush();
                         return true;
                     }
@@ -86,7 +86,28 @@ namespace FileSyncDesktop.Helpers
             };
 
             var result = asyncPF(fileName).Result;
+            WriteBibRecordsToLocalLog(bibRecords);
             return bibRecords;
+        }
+
+        private void WriteBibRecordsToLocalLog(Library.Helpers.BibRecords records)
+        {
+            if (records.bibRecords.Count < 1)
+            {
+                return;
+            }
+
+            DirectoryInfo rootDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            FileInfo logFileInfo = new FileInfo(Path.Combine(rootDir.FullName, _localRecordsLog));
+
+            using (StreamWriter sw = logFileInfo.AppendText())
+            {
+                foreach (var record in records.bibRecords)
+                {
+                    var entry = $"{record}";
+                    sw.WriteLine(entry);
+                }
+            }
         }
     }
 }

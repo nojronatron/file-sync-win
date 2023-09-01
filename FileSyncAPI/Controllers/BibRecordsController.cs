@@ -32,7 +32,6 @@ namespace FileSyncAPI.Controllers
             {
                 foreach (ApiBibRecord value in values.BibRecords)
                 {
-                    _logger.LogInformation("Current value is {value}", value);
                     string convertedValue = ConvertBibRecord.Convert(value);
                     _logger.LogInformation("Converted value is {convertedValue}", convertedValue);
 

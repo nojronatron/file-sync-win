@@ -1,35 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using System.Windows;
 using Caliburn.Micro;
-using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
-using FileSyncDesktop.Library.Api;
 using FileSyncDesktop.Models;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
-        private IFileDataProcessor _fileDataProcessor;
         private IFileWatcherSettings _fileWatcherSettings;
-        private ILogger _logger;
+        private IRmzLogger _logger;
 
         public MainWindowViewModel(
-            IFileDataProcessor fileDataProcessor,
             IFileWatcherSettings fileWatcherSettings, 
-            ILogger logger)
+            IRmzLogger logger)
         {
             _logger = logger;
             _logger.Data("MainWindowViewModel:", "MainWindowViewModel created.");
             _fileWatcherSettings = fileWatcherSettings;
-            _fileDataProcessor = fileDataProcessor;
             _logger.Flush();
         }
 

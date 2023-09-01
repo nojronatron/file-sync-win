@@ -12,11 +12,11 @@ namespace FileSyncDesktop.ViewModels
 {
     public class FileListViewModel : Screen
     {
-        private IRmzLogger _logger;
+        private readonly IRmzLogger _logger;
         private FileSystemWatcher _fsWatcher;
-        private IFileDataProcessor _fileDataProcessor;
-        private IFileWatcherSettings _fileWatcherSettings;
-        private IBibReportEndpoint _bibReportEndpoint;
+        private readonly IFileDataProcessor _fileDataProcessor;
+        private readonly IFileWatcherSettings _fileWatcherSettings;
+        private readonly IBibReportEndpoint _bibReportEndpoint;
 
         private FileListCollection _fileList;
         public FileListCollection FileList

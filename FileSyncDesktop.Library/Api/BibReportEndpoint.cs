@@ -8,7 +8,7 @@ namespace FileSyncDesktop.Library.Api
 {
     public class BibReportEndpoint : IBibReportEndpoint
     {
-        private IAPIHelper _apiHelper;
+        private readonly IAPIHelper _apiHelper;
 
         public BibReportEndpoint(IAPIHelper apiHelper)
         {

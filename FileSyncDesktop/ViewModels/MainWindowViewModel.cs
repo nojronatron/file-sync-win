@@ -8,8 +8,8 @@ namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
-        private IFileWatcherSettings _fileWatcherSettings;
-        private IRmzLogger _logger;
+        private readonly IFileWatcherSettings _fileWatcherSettings;
+        private readonly IRmzLogger _logger;
 
         public MainWindowViewModel(
             IFileWatcherSettings fileWatcherSettings, 

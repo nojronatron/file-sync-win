@@ -8,7 +8,7 @@ namespace FileSyncDesktop.Collections
     public class BibRecordCollection : ICollection<BibRecordModel>, IBibRecordCollection
     {
         // wrapper class represents a List of BibRecord objects
-        IList<BibRecordModel> _BibRecords = new List<BibRecordModel>();
+        readonly IList<BibRecordModel> _BibRecords = new List<BibRecordModel>();
         public BibRecordCollection() { }
 
         public int Count => _BibRecords.Count;

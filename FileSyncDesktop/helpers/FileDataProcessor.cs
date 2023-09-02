@@ -1,10 +1,6 @@
 ﻿using FileSyncDesktop.Collections;
-using FileSyncDesktop.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,11 +9,13 @@ namespace FileSyncDesktop.Helpers
 {
     public class FileDataProcessor : IFileDataProcessor
     {
-        private static string pattern = @"\d{1,3}\t(OUT|IN|DROP)\t\d{4}\t\d{1,2}\t\w{2}";
-        private IBibRecordCollection _bibRecordCollection;
-        private ILogger _logger;
+        private static readonly string pattern = @"\d{1,3}\t(OUT|IN|DROP)\t\d{4}\t\d{1,2}\t\w{2}";
+        private readonly IBibRecordCollection _bibRecordCollection;
+        private readonly IRmzLogger _logger;
+        private readonly int _delay = 500;
+        private readonly string _localRecordsLog = "LocalRecordsLog.txt";
 
-        public FileDataProcessor(IBibRecordCollection bibRecordCollection, ILogger logger)
+        public FileDataProcessor(IBibRecordCollection bibRecordCollection, IRmzLogger logger)
         {
             _bibRecordCollection = bibRecordCollection;
             _logger = logger;
@@ -30,19 +28,19 @@ namespace FileSyncDesktop.Helpers
         /// ProcessFile() does not distinguish between a file that has data matching the Regex pattern and one that does not.
         /// </summary>
         /// <param name="fileName"></param>
-        public Library.Helpers.BibRecords ProcessFile(string fileName)
+        public Library.Helpers.BibRecordModels ProcessFile(string fileName)
         {
             _logger.Data("FileDataProcessor.ProcessFile", "Called!");
-            var bibRecords = new Library.Helpers.BibRecords();
+            var bibRecords = new Library.Helpers.BibRecordModels();
 
-            AsyncProcessFile asyncPF = async (string _filename) =>
+            async Task<bool> asyncPF(string _filename)
             {
                 return await Task.Run(() =>
                 {
                     try
                     {
                         // delay before reading the file for about 500 milliseconds
-                        Thread.Sleep(500);
+                        Thread.Sleep(_delay);
                         string[] dataLines = File.ReadAllLines(_filename);
 
                         foreach (var dataLine in dataLines)
@@ -51,7 +49,7 @@ namespace FileSyncDesktop.Helpers
 
                             if (match.Success)
                             {
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Regex Match in {dataLine}");
+                                _logger.Data("FileDataProcessor.ProcessFile", $"Bib entry detected.");
                                 string[] data = dataLine.Split('\t');
                                 int bibNumber = int.Parse(data[0]);
                                 string action = data[1];
@@ -61,18 +59,20 @@ namespace FileSyncDesktop.Helpers
                                 var temp = new Library.Models.BibRecordModel()
                                 {
                                     BibNumber = bibNumber,
-                                    Action = action, 
-                                    BibTimeOfDay = bibTimeOfDay, 
-                                    DayOfMonth = dayOfMonth, 
+                                    Action = action,
+                                    BibTimeOfDay = bibTimeOfDay,
+                                    DayOfMonth = dayOfMonth,
                                     Location = shortLocation
                                 };
 
-                                bibRecords.bibRecords.Add(temp);
-                                _logger.Data("FileDataProcessor.ProcessFile:", $"Bib entry added: {temp}");
+                                bibRecords.BibRecords.Add(temp);
+                                _logger.Data("FileDataProcessor.ProcessFile", $"Bib entry added to local list.");
                             }
                         }
 
-                        _bibRecordCollection.AddRange(bibRecords.bibRecords);
+                        _bibRecordCollection.AddRange(bibRecords.BibRecords);
+                        string processedFilesCount = $"Processed {bibRecords.BibRecords.Count} bibs.";
+                        _logger.Data("ProcessFile", processedFilesCount);
                         _logger.Flush();
                         return true;
                     }
@@ -83,10 +83,31 @@ namespace FileSyncDesktop.Helpers
                         return false;
                     }
                 });
-            };
+            }
 
             var result = asyncPF(fileName).Result;
+            WriteBibRecordsToLocalLog(bibRecords);
             return bibRecords;
+        }
+
+        private void WriteBibRecordsToLocalLog(Library.Helpers.BibRecordModels records)
+        {
+            if (records.BibRecords.Count < 1)
+            {
+                return;
+            }
+
+            DirectoryInfo rootDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            FileInfo logFileInfo = new FileInfo(Path.Combine(rootDir.FullName, _localRecordsLog));
+
+            using (StreamWriter sw = logFileInfo.AppendText())
+            {
+                foreach (var record in records.BibRecords)
+                {
+                    var entry = $"{record}";
+                    sw.WriteLine(entry);
+                }
+            }
         }
     }
 }

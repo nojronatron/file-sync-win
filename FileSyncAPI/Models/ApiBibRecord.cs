@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace FileSyncAPI.Models
+﻿namespace FileSyncAPI.Models
 {
     public class ApiBibRecord : IApiBibRecord
     {

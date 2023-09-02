@@ -1,41 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using FileSyncDesktop.Library.Helpers;
-using FileSyncDesktop.Library.Models;
 
 namespace FileSyncDesktop.Library.Api
 {
     public class BibReportEndpoint : IBibReportEndpoint
     {
-        private IAPIHelper _apiHelper;
+        private readonly IAPIHelper _apiHelper;
 
         public BibReportEndpoint(IAPIHelper apiHelper)
         {
             _apiHelper = apiHelper;
         }
 
-        public async Task PostBibReport(BibRecords bibRecords)
+        public async Task<Tuple<bool, string>> PostBibReport(BibRecordModels bibRecords)
         {
             var requestUri = "/api/BibRecords";
             var httpContent = new StringContent(bibRecords.ToJson(), Encoding.UTF8, "application/json");
+            bool result = false;
+            string message = "";
 
-            using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync(requestUri, httpContent))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (HttpResponseMessage response = await _apiHelper.ApiClient.PostAsync(requestUri, httpContent))
                 {
-                    // todo: log success
-                    Console.WriteLine("Success");
-                }
-                else
-                {
-                    // todo: log failure
-                    Console.WriteLine(response.ReasonPhrase);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = true;
+                        message = "Succeeded.";
+                    }
                 }
             }
+            catch (ArgumentNullException ArgNullEx)
+            {
+                message = ArgNullEx.Message;
+            }
+            catch (HttpRequestException HttpReqEx)
+            {
+                message = HttpReqEx.Message;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+
+            return new Tuple<bool, string>(result, message);
         }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileSyncDesktop.Library.Models
+﻿namespace FileSyncDesktop.Library.Models
 {
     public class BibRecordModel
     {
@@ -13,5 +7,10 @@ namespace FileSyncDesktop.Library.Models
         public string BibTimeOfDay { get; set; }
         public int DayOfMonth { get; set; }
         public string Location { get; set; }
+
+        public override string ToString()
+        {
+            return $"{BibNumber}\t{Action}\t{BibTimeOfDay}\t{DayOfMonth}\t{Location}";
+        }
     }
 }

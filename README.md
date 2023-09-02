@@ -18,81 +18,64 @@ The prime directive of this tool is to synchronize Winlink message content betwe
 
 ### Simple Usage Walkthrough
 
-1. Copy the executable (and any DLLs) to a directory on the computer that has Winlink Express installed (Client).
+1. Download the Published App (ClickOnce Published folder -- TBD) to a directory on the computer that has Winlink Express installed (Client).
+1. Run the installer (setup.exe) from the ClickOne Publish folder (TBD).
 1. Find the directory where Winlink Express stores its message files.
-1. Run the Executable and enter the directory path into the UI.
-1. Copy the executable (and any DLLs) to a directory on the computer that will receive the data (Server).
-1. Run the Executable.
-1. Optional: If the Server also has Winlink Express installed, find the directory where Winlink Express stores its message files and enter it into the directory path in the UI.
-1. Client (required), Server (optional): Enter the Server's IP address and port number into the UI. *Note* This step may change in a future version.
-1. Both: Click the 'Start' button to begin the File Monitoring process.
+1. Run the Executable and enter the directory path into the UI (Future).
+1. A separate folder will have 'FileSyncAPI.exe' along with some DLL files. Run 'FileSyncAPI.exe' to host the Server component.
+1. Optional: Just run 'FileSyncAPI.exe' on any computer where you want to collect "client" data 
+1. Client (required), Server (optional): Enter the Server's IP address and port number into the UI. *Note: This step may change in a future version*
+1. Both: Click the 'Start' button to begin the File Monitoring process. Click 'Stop' to stop it.
 1. Client: Whenever a new file is created in the configured directory, the Client UI will display the filename and a log entry will be created in the same directory as the executable.
 1. Whenever the client detects a new file with bib data, it will send that data to the configured Server.
 1. Server: When the bib data is received, it will be logged to a file in the same directory as the executable.
 
 ### Other Behavior Expectations
 
-- Existing files in the configured path will NOT be detected or processed in any way.
-- New files that do not contain bib data will NOT be processed in any way.
-- The Server address and port configuration is completely optional. If it is not configured, the Client will still function normally, but will only send data to the local log file.
-- Simply launching the application starts the Server component, so no additional steps are required to configure or start it (at this time).
+- Only newly created files in the configured path will be detected and processed.
+- Newly created files that do not contain bib data will NOT be processed in any way.
+- The _Server address and port configuration_ is completely optional. The Client will still function normally without them but will only record data to the local log file.
 
 ### Security and Data Privacy
 
 - Avoid directly connecting your computer(s) to the Internet.
 - Always use a router with a firewall and only allow the inbound and outbound traffic that is absolutely necessary.
 - This application does NOT use authentication. In the future this feature may be added.
-- This application does NOT use encryption.
+- This application does NOT use encryption. By default, Microsoft Hosting provides a web server with both HTTP and HTTPS endpoints.
 
 ## Project Status
 
 - The timeline of this project is not set.
-- My goal to have something purposeful, stable, and well tested before the end of May 2024.
-- Additional features will be added as they are deemed necessary and as time permits.
+- Short term: Proof of concept and basic functionality in Published ClickOnce delivery.
+- Before end of May 2024: Publish a well tested client app and server service with a minimum set of features ready for BigFoot 2024.
+- Additional features will be added given time and volume of interest.
 
 ## Project Structure
 
 ### Server Side
 
-- Web server (ASP.NET Core 6) to receive POST requests from the client.
+- Web server for receiving and processing data from one or more clients.
 - Data processing to validate the data and format it for storage.
-- Data interface to receive data from the web server.
 - Data storage component for saving to a log file, and potentially a database.
-- No user interface is planned.
-- SwaggerUI for testing the API (technically, any client can be used to send data to the API but it must follow the expected JSON format).
+- Currently, no user interface is planned.
+- SwaggerUI is included for testing the API. See [JSON Body Format](#json-body-format) below.
 
 ### Client Side
 
-- File monitoring component to watch a directory for new files.
+- User interface to display the current configuration and status of the file monitoring process.
+- File monitoring component to watch the configured directory for new files.
 - File parsing component to extract bib data from each detected new file.
 - Data processing to validate the data and format it for storage and transmission.
-- Data storage component for saving to a log file.
+- Data storage component for saving data to a log file.
 - Data transmission component to send data to the server.
-- User interface to display the current configuration and status of the file monitoring process.
 
 ## Requirements
 
 ### Run
 
 - Windows 7 or later
-- Dot NET Framework 4.7
-- Dot NET 6
-
-### Build
-
-- Build tools (Visual Studio 2022 or later)
-- Dot NET Framework 4.7 (for Desktop and user interface)
-- ASP.NET Core 6.0 (for Web API)
-- Refresh NuGet packages (see Dependencies below)
-
-### Dependencies
-
-- Autofac v7.1.0.0
-- Caliburn.Micro v3.2.0
-- Swashbuckle.AspNetCore (Swagger) v6.5.0
-- Newtonsoft.Json v13.0.0.0
-
-See Project Properties and References in the Solution Explorer tree or in the Project file.
+- Dot NET Framework 4.x Runtimes
+- Dot NET 6 Runtimes (for Web API)
 
 ## UI Descriptions
 
@@ -105,9 +88,9 @@ More details to come as the project progresses.
 - Main UI: A window displays an existing configuration stored in Environment Variables when Load Configuration is clicked. This may change in a future version.
 - Main UI: The Clear Configuration button removes the configuration for File Monitoring and the configured Server Address.
 - Main UI: The Store Configuration button saves manually-entered configuration items. This is a future feature.
-- Main UI: Server address should be like `http://localhost:5432  1`. During early development this is acquired through Environment Variables. This configuration could change in a future version.
+- Main UI: Server address should be like `http://localhost:5432`. During early development this is acquired through Environment Variables. This could change in a future version.
 - File List UI: Appears when a configuration has be loaded or set using the LOAD or SET buttons.
-- File List UI Start and Stop buttons: Control the File Monitoring process. Note: If files are created while the process is stopped, those files will not be processed.
+- File List UI: Start and Stop buttons control the File Monitoring process. Currently, if files are created while the process is stopped, those files will _not be processed_ even when the process is restarted.
 
 ### Web
 
@@ -116,7 +99,9 @@ More details to come as the project progresses.
 ### Web Non UI Components
 
 - Web UI accepts a POST request with a JSON body containing a collection of records with named elements.
-- Response will be either a `200 OK` or `400 Bad Request`. Do not expect additional information in the response body or headers.
+- Response will be either a `200 OK` or `4xx` (usually 400 Bad Request. Do not expect additional information in the response body or headers.
+
+### JSON Body Format
 
 Example JSON Body in POST request:
 
@@ -149,6 +134,24 @@ Example JSON Body in POST request:
 ```
 
 ## Development
+
+### Dependencies
+
+- Autofac v7.1.0.0
+- Caliburn.Micro v3.2.0
+- Swashbuckle.AspNetCore (Swagger) v6.5.0
+- Newtonsoft.Json v13.0.0.0
+- NuGet Package Mappings might be required to successfully restore packages.
+
+See Project Properties and References in the Solution Explorer tree or in the Project file.
+
+### Build
+
+- Build tools (Visual Studio 2022 or later)
+- Dot NET Framework 4.7 (for Desktop and user interface)
+- ASP.NET Core 6.0 (for Web API)
+- Set Startup Configuration following the instructions in the [Startup](#startup) section below.
+- Refresh NuGet packages is _required_ see [Dependencies](#dependencies) below)
 
 ### Startup
 
@@ -184,9 +187,9 @@ FSW_SERVERADDR                 "localhost:6001"
 
 - Responsive Desktop User Interface.
 - Text-based logging for debugging purposes.
-- Text-based logging of received Bib Records (server-side).
+- Text-based logging of received Bib Records on Server-side.
 - Semi-automated import of environment variables to set File Monitoring and Server configurations.
-- File Monitoring captures filenames of *created* files only.
+- File Monitoring captures filenames of *created* files, as well as processed bib data on Client-side.
 - 
 ### Nerdy Features
 

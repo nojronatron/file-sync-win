@@ -1,10 +1,11 @@
 ﻿using FileSyncDesktop.Library.Helpers;
+using System;
 using System.Threading.Tasks;
 
 namespace FileSyncDesktop.Library.Api
 {
     public interface IBibReportEndpoint
     {
-        Task PostBibReport(BibRecords bibRecords);
+        Task<Tuple<bool, string>> PostBibReport(BibRecordModels bibRecords);
     }
 }

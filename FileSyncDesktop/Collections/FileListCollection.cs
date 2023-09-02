@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Navigation;
-using System.Linq.Expressions;
-using System.Runtime.Serialization;
 
 namespace FileSyncDesktop.Collections
 {
-    public class FileListCollection : ICollection<string>
-    { 
+    public class FileListCollection : ICollection<string>, IFileListCollection
+    {
         private List<string> _fileList;
         public List<string> FileList
         {
@@ -54,7 +47,7 @@ namespace FileSyncDesktop.Collections
         {
             if (arrayIndex < 0 || arrayIndex >= Count)
             {
-                foreach(string item in _fileList)
+                foreach (string item in _fileList)
                 {
                     array[arrayIndex] = item;
                     arrayIndex++;

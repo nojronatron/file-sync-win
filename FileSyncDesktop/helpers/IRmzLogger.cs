@@ -1,11 +1,12 @@
-﻿namespace FileSyncDesktop.Helpers
+﻿using System;
+
+namespace FileSyncDesktop.Helpers
 {
-    public interface ILogger
+    public interface IRmzLogger : IDisposable
     {
         bool IsEnabled { get; set; }
 
         void Data(string name, string info);
-        void Dispose();
         void Flush();
     }
 }

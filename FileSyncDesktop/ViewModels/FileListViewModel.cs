@@ -2,26 +2,21 @@
 using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
 using FileSyncDesktop.Library.Api;
-using FileSyncDesktop.Library.Helpers;
 using FileSyncDesktop.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class FileListViewModel : Screen
     {
-        private ILogger _logger;
+        private readonly IRmzLogger _logger;
         private FileSystemWatcher _fsWatcher;
-        private IFileDataProcessor _fileDataProcessor;
-        private IFileWatcherSettings _fileWatcherSettings;
-        private IBibReportEndpoint _bibReportEndpoint;
+        private readonly IFileDataProcessor _fileDataProcessor;
+        private readonly IFileWatcherSettings _fileWatcherSettings;
+        private readonly IBibReportEndpoint _bibReportEndpoint;
 
         private FileListCollection _fileList;
         public FileListCollection FileList
@@ -53,9 +48,19 @@ namespace FileSyncDesktop.ViewModels
             {
                 _fsWatcherIsRunning = value;
                 NotifyOfPropertyChange(() => FsWatcherIsRunning);
-                NotifyOfPropertyChange(() => CanStartFileMonitor);
-                NotifyOfPropertyChange(() => CanStopFileMonitor);
+                NotifyOfPropertyChange(() => CanStartFSWatcher);
+                NotifyOfPropertyChange(() => CanStopFSWatcher);
             }
+        }
+
+        public bool CanStartFSWatcher
+        {
+            get { return FsWatcherIsRunning ? false : true; }
+        }
+
+        public bool CanStopFSWatcher
+        {
+            get { return FsWatcherIsRunning ? true : false; }
         }
 
         [ImportingConstructor]
@@ -63,7 +68,7 @@ namespace FileSyncDesktop.ViewModels
             IBibReportEndpoint bibReportEndpoint,
             IFileDataProcessor fileDataProcessor,
             IFileWatcherSettings fileWatcherSettings,
-            ILogger logger)
+            IRmzLogger logger)
         {
             _bibReportEndpoint = bibReportEndpoint;
             _logger = logger;
@@ -138,16 +143,6 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        public bool CanStartFileMonitor
-        {
-            get { return FsWatcherIsRunning ? false : true; }
-        }
-
-        public bool CanStopFileMonitor
-        {
-            get { return FsWatcherIsRunning ? true : false; }
-        }
-
         public void StartFSWatcher()
         {
             var methodName = MethodBase.GetCurrentMethod().Name;
@@ -156,6 +151,8 @@ namespace FileSyncDesktop.ViewModels
             if (_fsWatcher == null)
             {
                 _logger.Data(methodName, "FileSystemWatcher is not initialized (Call Configure first)");
+                _logger.Flush();
+                return;
             }
             else
             {
@@ -193,6 +190,7 @@ namespace FileSyncDesktop.ViewModels
                 try
                 {
                     _logger.Data(methodName, "Stopping FileSystemWatcher");
+                    _fsWatcher.EnableRaisingEvents = false;
                     _fsWatcher.Created -= OnCreated;
                     _fsWatcher.Error -= OnError;
                 }
@@ -202,35 +200,37 @@ namespace FileSyncDesktop.ViewModels
                 }
                 finally
                 {
-                    _logger.Data(methodName, "FileSystemWatcher Dispose() called");
                     _fsWatcher.Dispose();
+                    _logger.Data(methodName, "FileSystemWatcher Disposed");
                 }
             }
 
+            FsWatcherIsRunning = false;
             _logger.Flush();
         }
 
         private async void OnCreated(object sender, FileSystemEventArgs e)
         {
-            // sender is Syste.IO.FileSystemWatcher
+            // sender is System.IO.FileSystemWatcher
             string fullPath = e.FullPath;
             string message = $"Created: {fullPath}";
-            _logger.Data("OnCreated:", message);
+            _logger.Data("OnCreated", message);
             _fileList.Add(fullPath);
             _fileListText = _fileList.ToString();
             NotifyOfPropertyChange(() => FileListText);
             var fileProcessed = _fileDataProcessor.ProcessFile(fullPath);
-            string logMessage = $"FileDataProcessor.ProcessFile() returned {fileProcessed.bibRecords}";
-            _logger.Data("OnCreated:", logMessage);
 
-            if (fileProcessed.bibRecords.Count > 0)
+            if (fileProcessed.BibRecords.Count < 1)
             {
-                string subMessage = $"Posting Bib Report to server with {fileProcessed.bibRecords.Count} records.";
-                _logger.Data("OnCreated:", subMessage);
-                await _bibReportEndpoint.PostBibReport(fileProcessed);
+                _logger.Data("OnCreated", "No records found in file. Not posting to server.");
+                return;
             }
 
-            _logger.Data("OnCreated:", "Exiting.");
+            var postBibRecordResult = await _bibReportEndpoint.PostBibReport(fileProcessed);
+            string postResult = postBibRecordResult.Item1 ? "Posted records to server." : "Could not post records to a server.";
+            string postResultMessage = postBibRecordResult.Item2;
+            _logger.Data("OnCreated", postResult);
+            _logger.Data("OnCreated", postResultMessage);
             _logger.Flush();
         }
 
@@ -272,7 +272,7 @@ namespace FileSyncDesktop.ViewModels
         {
             if (ex != null)
             {
-                _logger.Data("[LogException]", $"Received exception {ex.Message}");
+                _logger.Data("LogException", $"Received exception {ex.Message}");
             }
         }
     }

@@ -4,14 +4,15 @@ using System.IO;
 
 namespace FileSyncDesktop.Helpers
 {
-    public class Logger : IDisposable, ILogger
+    public class RmzLogger : IRmzLogger
     {
+        // todo: move LofFileName to a configuration entry
         private readonly static string LogFileName = "file-sync-win.log";
         private FileInfo LogfileInfo { get; set; }
         private Queue<string> LogEntries = null;
         public bool IsEnabled { get; set; } = false;
 
-        public Logger()
+        public RmzLogger()
         {
             DirectoryInfo rootDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
             LogfileInfo = new FileInfo(Path.Combine(rootDirectory.FullName, LogFileName));

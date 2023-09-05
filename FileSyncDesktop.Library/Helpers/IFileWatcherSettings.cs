@@ -8,13 +8,13 @@
         string ServerPort { get; set; }
 
         bool FileSourcePathIsValid(string value);
-        bool FilterArgumentIsValid(string value);
+        bool FilterArgumentMatchesPattern(string value);
         void GetSettingsFromEnvVars();
         bool HasFileSettings();
         bool HasServerSettings();
         void RemoveFileSettings();
         void RemoveServerSettings();
-        bool ServerPortIsValid(string value);
+        bool ServerPortInValidRange(string value);
         void SetFileSettings(string filePath, string fileType);
         void SetServerSettings(string serverAddress, string serverPort);
         string ToString();

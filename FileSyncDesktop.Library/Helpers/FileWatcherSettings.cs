@@ -34,7 +34,7 @@ namespace FileSyncDesktop.Library.Helpers
 
         public bool HasFileSettings()
         {
-            return string.IsNullOrWhiteSpace(FilePath) && FileType.Substring(0, 2) == "*.";
+            return FileSourcePathIsValid(FilePath) && FilterArgumentMatchesPattern(FileType);
         }
 
         public void SetFileSettings(string filePath, string fileType)
@@ -63,42 +63,32 @@ namespace FileSyncDesktop.Library.Helpers
 
         public bool HasServerSettings()
         {
-            return ServerAddress != string.Empty && ServerPort != string.Empty;
+            // todo: check for valid server address if not null or empty
+            return ServerPortInValidRange(ServerPort) && !string.IsNullOrEmpty(ServerAddress);
         }
 
         public bool FileSourcePathIsValid(string value)
         {
             var matches = _filepathRegex.Matches(value);
-
-            if (matches.Count > 0)
-            {
-                return true;
-            }
-
-            return false;
+            return matches.Count > 0 && FilePathExists(value);
         }
 
-        public bool FilterArgumentIsValid(string value)
+        public bool FilePathExists(string value)
+        {
+            return System.IO.Directory.Exists(value);
+        }
+
+        public bool FilterArgumentMatchesPattern(string value)
         {
             var matches = _filterRegex.Matches(value);
-
-            if (matches.Count > 0)
-            {
-                return true;
-            }
-
-            return false;
+            return matches.Count > 0;
         }
 
-        public bool ServerPortIsValid(string value)
+        public bool ServerPortInValidRange(string value)
         {
             if (int.TryParse(value, out int portValue))
             {
-
-                if (portValue >= _minServerPort && portValue <= _maxServerPort)
-                {
-                    return true;
-                }
+                return (portValue >= _minServerPort && portValue <= _maxServerPort);
             }
 
             return false;

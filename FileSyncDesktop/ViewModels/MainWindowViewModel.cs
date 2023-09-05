@@ -111,8 +111,8 @@ namespace FileSyncDesktop.ViewModels
             get
             {
                 if(_fileWatcherSettings.FileSourcePathIsValid(FileSourcePath) &&
-                    _fileWatcherSettings.FilterArgumentIsValid(FilterArgument) &&
-                    _fileWatcherSettings.ServerPortIsValid(ServerPort)
+                    _fileWatcherSettings.FilterArgumentMatchesPattern(FilterArgument) &&
+                    _fileWatcherSettings.ServerPortInValidRange(ServerPort)
                     )
                 {
                     return true;
@@ -143,21 +143,32 @@ namespace FileSyncDesktop.ViewModels
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Called. Getting config settings from Environment Variables.");
             _fileWatcherSettings.GetSettingsFromEnvVars();
+            FileSourcePath = _fileWatcherSettings.FilePath;
+            FilterArgument = _fileWatcherSettings.FileType;
+            ServerAddress = _fileWatcherSettings.ServerAddress;
+            ServerPort = _fileWatcherSettings.ServerPort;
             _logger.Flush();
-            NotifyConfigChanged();
         }
 
         // set user-entered configuration items into the settings object
         public void SetConfiguration()
         {
-            // todo: implement if this becomes necessary
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Using arguments in form to set FileWatcher Configuration.");
             _fileWatcherSettings.SetFileSettings(FileSourcePath, FilterArgument);
             _fileWatcherSettings.SetServerSettings(ServerAddress, ServerPort);
             _logger.Data(methodName, "Launching the File Watcher view.");
             _logger.Flush();
+        }
 
+        public void OpenFileMonitor() {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            if (_fileWatcherSettings.HasFileSettings() && _fileWatcherSettings.HasServerSettings())
+            {
+                _logger.Data(methodName, "Settings not valid, returning to Main View window.");
+            }
+            _logger.Data(methodName, "Launching the File Watcher view.");
             // use Conductor to launch child ViewModel
             ActivateItem(IoC.Get<FileListViewModel>());
         }

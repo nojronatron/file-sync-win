@@ -113,7 +113,6 @@
     <Compile Include="Helpers\FileDataProcessor.cs" />
     <Compile Include="Helpers\IFileDataProcessor.cs" />
     <Compile Include="Helpers\IRmzLogger.cs" />
-    <Compile Include="Models\IFileWatcherSettings.cs" />
     <Compile Include="ViewModels\FileListViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\FileListView.xaml.cs">
@@ -137,7 +136,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\FileWatcherSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -169,6 +167,9 @@
       <Project>{6AF3693C-C39A-44B8-A51A-45663948F674}</Project>
       <Name>FileSyncDesktop.Library</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

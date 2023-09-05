@@ -2,7 +2,7 @@
 using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
 using FileSyncDesktop.Library.Api;
-using FileSyncDesktop.Models;
+using FileSyncDesktop.Library.Helpers;
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -53,11 +53,13 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0075:Simplify conditional expression", Justification = "Readability")]
         public bool CanStartFSWatcher
         {
             get { return FsWatcherIsRunning ? false : true; }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0075:Simplify conditional expression", Justification = "Readability")]
         public bool CanStopFSWatcher
         {
             get { return FsWatcherIsRunning ? true : false; }

@@ -68,6 +68,8 @@
     <Compile Include="Api\IAPIHelper.cs" />
     <Compile Include="Api\IBibReportEndpoint.cs" />
     <Compile Include="Helpers\BibRecordModels.cs" />
+    <Compile Include="Helpers\FileWatcherSettings.cs" />
+    <Compile Include="Helpers\IFileWatcherSettings.cs" />
     <Compile Include="Models\BibRecordModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

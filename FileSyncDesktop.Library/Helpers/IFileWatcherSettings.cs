@@ -1,4 +1,4 @@
-﻿namespace FileSyncDesktop.Models
+﻿namespace FileSyncDesktop.Library.Helpers
 {
     public interface IFileWatcherSettings
     {
@@ -7,13 +7,16 @@
         string ServerAddress { get; set; }
         string ServerPort { get; set; }
 
+        bool FileSourcePathIsValid(string value);
+        bool FilterArgumentIsValid(string value);
         void GetSettingsFromEnvVars();
         bool HasFileSettings();
         bool HasServerSettings();
-        void SetFileSettings(string filePath, string fileType);
-        void SetServerSettings(string serverAddress, int serverPort);
         void RemoveFileSettings();
         void RemoveServerSettings();
+        bool ServerPortIsValid(string value);
+        void SetFileSettings(string filePath, string fileType);
+        void SetServerSettings(string serverAddress, string serverPort);
         string ToString();
     }
 }

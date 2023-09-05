@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
-namespace FileSyncDesktop.Models
+namespace FileSyncDesktop.Library.Helpers
 {
     public class FileWatcherSettings : IFileWatcherSettings
     {
@@ -8,6 +9,10 @@ namespace FileSyncDesktop.Models
         public string FileType { get; set; } = string.Empty;
         public string ServerAddress { get; set; } = string.Empty;
         public string ServerPort { get; set; } = string.Empty;
+        private static readonly Regex _filepathRegex = new Regex(@"^\w:\\((\S)*\\{0,1})*$");
+        private static readonly Regex _filterRegex = new Regex(@"^\*\.\w{0,4}$");
+        private static readonly int _minServerPort = 8001;
+        private static readonly int _maxServerPort = 65535;
 
         public FileWatcherSettings() { }
 
@@ -38,10 +43,10 @@ namespace FileSyncDesktop.Models
             FileType = fileType;
         }
 
-        public void SetServerSettings(string serverAddress, int serverPort)
+        public void SetServerSettings(string serverAddress, string serverPort)
         {
             ServerAddress = serverAddress;
-            ServerPort = serverPort.ToString();
+            ServerPort = serverPort;
         }
 
         public void RemoveFileSettings()
@@ -59,6 +64,44 @@ namespace FileSyncDesktop.Models
         public bool HasServerSettings()
         {
             return ServerAddress != string.Empty && ServerPort != string.Empty;
+        }
+
+        public bool FileSourcePathIsValid(string value)
+        {
+            var matches = _filepathRegex.Matches(value);
+
+            if (matches.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool FilterArgumentIsValid(string value)
+        {
+            var matches = _filterRegex.Matches(value);
+
+            if (matches.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool ServerPortIsValid(string value)
+        {
+            if (int.TryParse(value, out int portValue))
+            {
+
+                if (portValue >= _minServerPort && portValue <= _maxServerPort)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override string ToString()

@@ -50,7 +50,7 @@
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server Port" />
-                    <TextBox x:Name="ServerPort" VerticalAlignment="Center" Background="White" ToolTip="Example: 6001" />
+                    <TextBox x:Name="ServerPort" VerticalAlignment="Center" Background="White" ToolTip="Example: 7001" />
                 </DockPanel>
                 <StackPanel>
                     <Button x:Name="ClearConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Clear server and file configuration settings.">Clear</Button>

@@ -1,23 +1,17 @@
 ﻿using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Navigation;
 using Caliburn.Micro;
 using FileSyncDesktop.Helpers;
-using FileSyncDesktop.Models;
+using FileSyncDesktop.Library.Helpers;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
         private static readonly string _defaultServerAddress = "localhost";
-        private static readonly int _defaultServerPort = 8001;
-        private static readonly int _minServerPort = 8001;
-        private static readonly int _maxServerPort = 65536;
+        private static readonly string _defaultServerPort = "8001";
         private static readonly string _defaultFilepathArgument = @"C:\Users\Public\Documents\";
-        private static readonly Regex _filepathRegex = new Regex(@"^\w:\\((\S)*\\{0,1})*$");
         private static readonly string _defaultFilterArgument = "*.mime";
-        private static readonly Regex _filterRegex = new Regex(@"^\*\.\w{0,4}$");
 
         private readonly IFileWatcherSettings _fileWatcherSettings;
         private readonly IRmzLogger _logger;
@@ -38,17 +32,7 @@ namespace FileSyncDesktop.ViewModels
             get { return _fileSourcePath; }
             set
             {
-                var matches = _filepathRegex.Matches(value);
-
-                if (matches.Count > 0)
-                {
-                    _fileSourcePath = value;
-                }
-                else
-                {
-                    _fileSourcePath = _defaultFilepathArgument;
-                }
-
+                _fileSourcePath = value;
                 NotifyOfPropertyChange(() => FileSourcePath);
             }
         }
@@ -59,17 +43,7 @@ namespace FileSyncDesktop.ViewModels
             get { return _filterArgument; }
             set
             {
-                var matches = _filterRegex.Matches(value);
-
-                if (matches.Count > 0)
-                {
-                    _filterArgument = value;
-                }
-                else
-                {
-                    _filterArgument = _defaultFilterArgument;
-                }
-
+                _filterArgument = value;
                 NotifyOfPropertyChange(() => FilterArgument);
             }
         }
@@ -85,24 +59,16 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        private int _serverPort = _defaultServerPort;
-        public int ServerPort
+        private string _serverPort = _defaultServerPort;
+        public string ServerPort
         {
             get
             {
-                    return _serverPort;
+                return _serverPort;
             }
             set
             {
-                if (value >= _minServerPort && value < _maxServerPort)
-                {
-                    _serverPort = value;
-                }
-                else
-                {
-                    _serverPort = 7001;
-                }
-
+                _serverPort = value;
                 NotifyOfPropertyChange(() => ServerPort);
             }
         }
@@ -113,7 +79,7 @@ namespace FileSyncDesktop.ViewModels
             _logger.Data(methodName, "Notifying.");
             _fileWatcherSettings.FilePath = FileSourcePath;
             _fileWatcherSettings.FileType = FilterArgument;
-            _fileWatcherSettings.ServerAddress = ServerAddress; 
+            _fileWatcherSettings.ServerAddress = ServerAddress;
             _fileWatcherSettings.ServerPort = ServerPort.ToString();
             _logger.Data(methodName, "Path, Filter, Server address and Port settings:");
             _logger.Data(methodName, FileSourcePath);
@@ -144,10 +110,15 @@ namespace FileSyncDesktop.ViewModels
         {
             get
             {
-                return !string.IsNullOrWhiteSpace(FileSourcePath) &&
-                    !string.IsNullOrWhiteSpace(FilterArgument) &&
-                    !string.IsNullOrWhiteSpace(ServerAddress) &&
-                    (ServerPort >= _minServerPort && ServerPort < _maxServerPort);
+                if(_fileWatcherSettings.FileSourcePathIsValid(FileSourcePath) &&
+                    _fileWatcherSettings.FilterArgumentIsValid(FilterArgument) &&
+                    _fileWatcherSettings.ServerPortIsValid(ServerPort)
+                    )
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
 

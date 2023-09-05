@@ -29,7 +29,19 @@ namespace FileSyncDesktop.Models
 
         public bool HasFileSettings()
         {
-            return FilePath != string.Empty && FileType.Substring(0, 2) == "*.";
+            return string.IsNullOrWhiteSpace(FilePath) && FileType.Substring(0, 2) == "*.";
+        }
+
+        public void SetFileSettings(string filePath, string fileType)
+        {
+            FilePath = filePath;
+            FileType = fileType;
+        }
+
+        public void SetServerSettings(string serverAddress, int serverPort)
+        {
+            ServerAddress = serverAddress;
+            ServerPort = serverPort.ToString();
         }
 
         public void RemoveFileSettings()

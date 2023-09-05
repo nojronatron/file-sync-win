@@ -82,7 +82,7 @@ namespace FileSyncDesktop.ViewModels
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Acquiring FileWatcher Settings.");
-            _fileWatcherSettings.GetSettingsFromEnvVars();
+            //_fileWatcherSettings.GetSettingsFromEnvVars();
 
             bool hasFilePathFilterSettings = HasFilePathFilterSettings();
             bool hasServerSettings = HasServerSettings();

@@ -46,7 +46,7 @@
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server" />
-                    <TextBox x:Name="ServerAddress" VerticalAlignment="Center" Background="White" ToolTip="Example: 192.168.0.10" />
+                    <TextBox x:Name="ServerAddress" VerticalAlignment="Center" Background="White" ToolTip="localhost or an IPv4 address" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server Port" />

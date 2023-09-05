@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Navigation;
 using Caliburn.Micro;
 using FileSyncDesktop.Helpers;
 using FileSyncDesktop.Models;
@@ -8,6 +10,15 @@ namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
+        private static readonly string _defaultServerAddress = "localhost";
+        private static readonly int _defaultServerPort = 8001;
+        private static readonly int _minServerPort = 8001;
+        private static readonly int _maxServerPort = 65536;
+        private static readonly string _defaultFilepathArgument = @"C:\Users\Public\Documents\";
+        private static readonly Regex _filepathRegex = new Regex(@"^\w:\\((\S)*\\{0,1})*$");
+        private static readonly string _defaultFilterArgument = "*.mime";
+        private static readonly Regex _filterRegex = new Regex(@"^\*\.\w{0,4}$");
+
         private readonly IFileWatcherSettings _fileWatcherSettings;
         private readonly IRmzLogger _logger;
 
@@ -21,29 +32,49 @@ namespace FileSyncDesktop.ViewModels
             _logger.Flush();
         }
 
-        private string _fileSourcePath;
+        private string _fileSourcePath = _defaultFilepathArgument;
         public string FileSourcePath
         {
             get { return _fileSourcePath; }
             set
             {
-                _fileSourcePath = value;
+                var matches = _filepathRegex.Matches(value);
+
+                if (matches.Count > 0)
+                {
+                    _fileSourcePath = value;
+                }
+                else
+                {
+                    _fileSourcePath = _defaultFilepathArgument;
+                }
+
                 NotifyOfPropertyChange(() => FileSourcePath);
             }
         }
 
-        private string _filterArgument;
+        private string _filterArgument = _defaultFilterArgument;
         public string FilterArgument
         {
             get { return _filterArgument; }
             set
             {
-                _filterArgument = value;
+                var matches = _filterRegex.Matches(value);
+
+                if (matches.Count > 0)
+                {
+                    _filterArgument = value;
+                }
+                else
+                {
+                    _filterArgument = _defaultFilterArgument;
+                }
+
                 NotifyOfPropertyChange(() => FilterArgument);
             }
         }
 
-        private string _serverAddress;
+        private string _serverAddress = _defaultServerAddress;
         public string ServerAddress
         {
             get { return _serverAddress; }
@@ -54,13 +85,24 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        private int _serverPort;
+        private int _serverPort = _defaultServerPort;
         public int ServerPort
         {
-            get { return _serverPort; }
+            get
+            {
+                    return _serverPort;
+            }
             set
             {
-                _serverPort = value;
+                if (value >= _minServerPort && value < _maxServerPort)
+                {
+                    _serverPort = value;
+                }
+                else
+                {
+                    _serverPort = 7001;
+                }
+
                 NotifyOfPropertyChange(() => ServerPort);
             }
         }
@@ -69,53 +111,57 @@ namespace FileSyncDesktop.ViewModels
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Notifying.");
-            FileSourcePath = _fileWatcherSettings.FilePath;
-            FilterArgument = _fileWatcherSettings.FileType;
-            ServerAddress = _fileWatcherSettings.ServerAddress;
+            _fileWatcherSettings.FilePath = FileSourcePath;
+            _fileWatcherSettings.FileType = FilterArgument;
+            _fileWatcherSettings.ServerAddress = ServerAddress; 
+            _fileWatcherSettings.ServerPort = ServerPort.ToString();
+            _logger.Data(methodName, "Path, Filter, Server address and Port settings:");
+            _logger.Data(methodName, FileSourcePath);
+            _logger.Data(methodName, FilterArgument);
+            _logger.Data(methodName, ServerAddress);
+            _logger.Data(methodName, ServerPort.ToString());
+            _logger.Flush();
+        }
 
-            if (int.TryParse(_fileWatcherSettings.ServerPort, out int srvrPort))
+        public bool CanClearConfiguration
+        {
+            get
             {
-                ServerPort = srvrPort;
+                return true;
             }
-            else
+        }
+
+
+        public bool CanLoadConfiguration
+        {
+            get
             {
-                ServerPort = -1;
+                return true;
             }
-
-            _logger.Flush();
         }
 
-        public bool CanClearConfiguration()
+        public bool CanSetConfiguration
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Hard-coded TRUE.");
-            _logger.Flush();
-            return true;
-        }
-
-        public bool CanLoadConfiguration()
-        {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Hard-coded TRUE.");
-            _logger.Flush();
-            return true;
-        }
-
-        public bool CanSetConfiguration()
-        {
-            // todo: implement if this becomes necessary
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Hard-coded FALSE.");
-            _logger.Flush();
-            return false;
+            get
+            {
+                return !string.IsNullOrWhiteSpace(FileSourcePath) &&
+                    !string.IsNullOrWhiteSpace(FilterArgument) &&
+                    !string.IsNullOrWhiteSpace(ServerAddress) &&
+                    (ServerPort >= _minServerPort && ServerPort < _maxServerPort);
+            }
         }
 
         public void ClearConfiguration()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Called.");
+            _logger.Data(methodName, "Clearing File Watcher settings.");
             _fileWatcherSettings.RemoveFileSettings();
             _fileWatcherSettings.RemoveServerSettings();
+            _logger.Data(methodName, "Clearing form entries.");
+            FileSourcePath = string.Empty;
+            FilterArgument = string.Empty;
+            ServerAddress = string.Empty;
+            ServerPort = _defaultServerPort;
             NotifyConfigChanged();
             _logger.Flush();
         }
@@ -124,12 +170,10 @@ namespace FileSyncDesktop.ViewModels
         public void LoadConfiguration()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Called.");
-            _logger.Flush();
+            _logger.Data(methodName, "Called. Getting config settings from Environment Variables.");
             _fileWatcherSettings.GetSettingsFromEnvVars();
+            _logger.Flush();
             NotifyConfigChanged();
-            // use Conductor to launch chile ViewModels
-            ActivateItem(IoC.Get<FileListViewModel>());
         }
 
         // set user-entered configuration items into the settings object
@@ -137,9 +181,14 @@ namespace FileSyncDesktop.ViewModels
         {
             // todo: implement if this becomes necessary
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Called.");
-            _logger.Data(methodName, "NO IMPLEMENTATION!");
+            _logger.Data(methodName, "Using arguments in form to set FileWatcher Configuration.");
+            _fileWatcherSettings.SetFileSettings(FileSourcePath, FilterArgument);
+            _fileWatcherSettings.SetServerSettings(ServerAddress, ServerPort);
+            _logger.Data(methodName, "Launching the File Watcher view.");
             _logger.Flush();
+
+            // use Conductor to launch child ViewModel
+            ActivateItem(IoC.Get<FileListViewModel>());
         }
 
         public void MenuAbout()

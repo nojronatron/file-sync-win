@@ -10,9 +10,20 @@ The goal is to create a tool that can be used to synchronize message data betwee
 
 The 'Server' portion of program listens for notifications and receives a listing of bib reports, recording them to a log file.
 
-The 'Client' portion of the program watches a directory and, whenever a new file is created, parses the content and stores only bib data fields `bibNumber`, `action`, `timeOfDay`, `dayOfMonth`, and `location`, and also finds a configured server instance and ships the data to it.
+The 'Client' portion of the program watches a directory and, whenever a new file is created, parses the content and stores only bib data fields `bibNumber`, `action`, `timeOfDay`, `dayOfMonth`, and `location`.
+
+The Client software will also finds a configured server instance and ship the parsed data to it.
 
 The prime directive of this tool is to synchronize Winlink message content between LAN-connected computers in a hub-and-spoke type format, and then prep the data to be stored in a logfile and/or database.
+
+## Project Status
+
+- Core functionality is working.
+- Additional UI tweaks are planned for the short term.
+- In the short term, publish a proof of concept and basic functionality (MVP) for demonstration purposes to potential end-users.
+- Distribution: Limited. Use ClickOnce to publish and distribute the client application and the server service.
+- Mid term: Develop a solution based on this MVP concept that incorporates new and/or updated features based on feedback, and a better designed repository and project for the longer-term.
+- Before end of May 2024: Publish a well tested client app and server service with a minimum set of features ready for BigFoot 2024.
 
 ## Usage and Behavior
 
@@ -22,13 +33,12 @@ The prime directive of this tool is to synchronize Winlink message content betwe
 1. Run the installer (setup.exe) from the ClickOne Publish folder (TBD).
 1. Find the directory where Winlink Express stores its message files.
 1. Run the Executable and enter the directory path into the UI (Future).
-1. A separate folder will have 'FileSyncAPI.exe' along with some DLL files. Run 'FileSyncAPI.exe' to host the Server component.
+1. A separate folder will have 'FileSyncAPI.exe' along with some DLL files. Run 'FileSyncAPI.exe' to host the Server component (additional configuration might be necessary in a future revision).
 1. Optional: Just run 'FileSyncAPI.exe' on any computer where you want to collect "client" data 
 1. Client (required), Server (optional): Enter the Server's IP address and port number into the UI. *Note: This step may change in a future version*
-1. Both: Click the 'Start' button to begin the File Monitoring process. Click 'Stop' to stop it.
-1. Client: Whenever a new file is created in the configured directory, the Client UI will display the filename and a log entry will be created in the same directory as the executable.
-1. Whenever the client detects a new file with bib data, it will send that data to the configured Server.
-1. Server: When the bib data is received, it will be logged to a file in the same directory as the executable.
+1. Client: Click the 'Start' button to begin the File Monitoring process. Click 'Stop' to stop it.
+1. Client: Whenever a new file is created in the configured directory, the Client UI will display the discovered filename, log the parsed entry, and send the parsed data to the configured Server. If there is no server configuration, no data will be sent.
+1. Server: When the bib data is received, it will be logged to a file in the same directory as 'FileSyncAPI.exe'.
 
 ### Other Behavior Expectations
 
@@ -42,13 +52,6 @@ The prime directive of this tool is to synchronize Winlink message content betwe
 - Always use a router with a firewall and only allow the inbound and outbound traffic that is absolutely necessary.
 - This application does NOT use authentication. In the future this feature may be added.
 - This application does NOT use encryption. By default, Microsoft Hosting provides a web server with both HTTP and HTTPS endpoints.
-
-## Project Status
-
-- The timeline of this project is not set.
-- Short term: Proof of concept and basic functionality in Published ClickOnce delivery.
-- Before end of May 2024: Publish a well tested client app and server service with a minimum set of features ready for BigFoot 2024.
-- Additional features will be added given time and volume of interest.
 
 ## Project Structure
 
@@ -69,6 +72,13 @@ The prime directive of this tool is to synchronize Winlink message content betwe
 - Data storage component for saving data to a log file.
 - Data transmission component to send data to the server.
 
+### Both
+
+Log files are stored in the same directory as the executable:
+
+- Development: `bin\Debug'
+- Deployment/Installation: Whatever directory the EXE and associated DLL files are in
+
 ## Requirements
 
 ### Run
@@ -83,8 +93,6 @@ More details to come as the project progresses.
 
 ### Desktop
 
-- Logging is automatic and can be turned on or off (during development it can be programmatically changed but not in the UI).
-- The Log file will be stored in the same directory as the executable (dev: `bin\Debug'; end user: whatever directory the EXE and associated DLL files are in).
 - Main UI: A window displays an existing configuration stored in Environment Variables when Load Configuration is clicked. This may change in a future version.
 - Main UI: The Clear Configuration button removes the configuration for File Monitoring and the configured Server Address.
 - Main UI: The Store Configuration button saves manually-entered configuration items. This is a future feature.
@@ -141,7 +149,8 @@ Example JSON Body in POST request:
 - Caliburn.Micro v3.2.0
 - Swashbuckle.AspNetCore (Swagger) v6.5.0
 - Newtonsoft.Json v13.0.0.0
-- NuGet Package Mappings might be required to successfully restore packages.
+
+NuGet Package Mappings might be required to successfully restore packages.
 
 See Project Properties and References in the Solution Explorer tree or in the Project file.
 
@@ -182,6 +191,8 @@ FSW_FILETYPE                   *.mime
 FSW_SERVERADDR                 "localhost:6001"
 ...
 ```
+
+_Note_: FSW_SERVERADDR must include the port number. In the UI, the Server Address/Name and Port are individual fields.
 
 ## Implemented Features
 

@@ -49,7 +49,18 @@ When this project is ready, a presentation will be made to the interested partie
 - Avoid directly connecting your computer(s) to the Internet.
 - Always use a router with a firewall and only allow the inbound and outbound traffic that is absolutely necessary.
 - This application does NOT use authentication. In the future this feature may be added.
-- This application does NOT use encryption. By default, Microsoft Hosting provides a web server with both HTTP and HTTPS endpoints.
+- This application does NOT use encryption, and only the HTTP endpoint is available on the web service.
+- To allow host-to-host communications, you will need to open TCP and UDP ports on your server computer's firewall.
+
+#### Firewall TCP and UDP Ports
+
+Open Windows Firewall Advanced Settings and create 2 new rules, one for TCP, and one for UDP, in the Public profile (or All Profiles):
+
+- TCP: Allow inbound traffic on port 5000.
+- UDP: Allow inbound traffic on port 5001.
+- Program: `FileSyncAPI.exe`
+
+To help you diagnose connection issues, turn on Advanced Logging for the Windows Firewall to capture both types of actions: `Allow` and `Block`.
 
 ## Project Structure
 

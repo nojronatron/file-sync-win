@@ -20,7 +20,7 @@ namespace FileSyncDesktop.Library.Api
             var requestUri = "/api/BibRecords";
             var httpContent = new StringContent(bibRecords.ToJson(), Encoding.UTF8, "application/json");
             bool result = false;
-            string message = "";
+            string message = string.Empty;
 
             try
             {
@@ -35,15 +35,23 @@ namespace FileSyncDesktop.Library.Api
             }
             catch (ArgumentNullException ArgNullEx)
             {
-                message = ArgNullEx.Message;
+                message = $"Argument Null Exception was thrown.\nStacktrace: {ArgNullEx.StackTrace}\nMessage: {ArgNullEx.Message}";
+                if (ArgNullEx.InnerException != null)
+                {
+                    message += $"\nInner Exception Message: {ArgNullEx.InnerException.Message}";
+                }
             }
             catch (HttpRequestException HttpReqEx)
             {
-                message = HttpReqEx.Message;
+                message = $"HTTP Request Exception was thrown.\nStacktrace: {HttpReqEx.StackTrace}\nMessage: {HttpReqEx.Message}";
+                if (HttpReqEx.InnerException != null)
+                {
+                    message += $"\nInner Exception Message: {HttpReqEx.InnerException.Message}";
+                }
             }
             catch (Exception ex)
             {
-                message = ex.Message;
+                message = $"Some other Exception was thrown.\nStacktrace: {ex.StackTrace}\nMessage: {ex.Message}";
             }
 
             return new Tuple<bool, string>(result, message);

@@ -19,7 +19,8 @@ namespace FileSyncDesktop.Library.Api
 
         private void InitializeClient()
         {
-            string api = $"https://{_fileWatcherSettings.ServerAddress}:{_fileWatcherSettings.ServerPort}/";
+            string api = $"http://{_fileWatcherSettings.ServerAddress}:{_fileWatcherSettings.ServerPort}/";
+
             _apiClient = new HttpClient
             {
                 BaseAddress = new Uri(api)

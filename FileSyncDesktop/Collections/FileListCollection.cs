@@ -80,10 +80,11 @@ namespace FileSyncDesktop.Collections
             {
                 StringBuilder sb = new StringBuilder();
 
-                foreach (string item in _fileList)
+                for (int idx=_fileList.Count-1; idx >= 0; idx--)
                 {
-                    sb.Append(item).Append("\n");
+                    sb.Append(_fileList[idx]).Append("\n");
                 }
+
                 return sb.ToString();
             }
         }

@@ -2,12 +2,17 @@
 using System.Windows;
 using Caliburn.Micro;
 using FileSyncDesktop.Helpers;
-using FileSyncDesktop.Models;
+using FileSyncDesktop.Library.Helpers;
 
 namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
+        private static readonly string _defaultServerAddress = "localhost";
+        private static readonly string _defaultServerPort = "5001";
+        private static readonly string _defaultFilepathArgument = @"C:\Users\Public\Documents\";
+        private static readonly string _defaultFilterArgument = "*.mime";
+
         private readonly IFileWatcherSettings _fileWatcherSettings;
         private readonly IRmzLogger _logger;
 
@@ -21,7 +26,7 @@ namespace FileSyncDesktop.ViewModels
             _logger.Flush();
         }
 
-        private string _fileSourcePath;
+        private string _fileSourcePath = _defaultFilepathArgument;
         public string FileSourcePath
         {
             get { return _fileSourcePath; }
@@ -32,7 +37,7 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        private string _filterArgument;
+        private string _filterArgument = _defaultFilterArgument;
         public string FilterArgument
         {
             get { return _filterArgument; }
@@ -43,7 +48,7 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        private string _serverAddress;
+        private string _serverAddress = _defaultServerAddress;
         public string ServerAddress
         {
             get { return _serverAddress; }
@@ -54,10 +59,13 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        private int _serverPort;
-        public int ServerPort
+        private string _serverPort = _defaultServerPort;
+        public string ServerPort
         {
-            get { return _serverPort; }
+            get
+            {
+                return _serverPort;
+            }
             set
             {
                 _serverPort = value;
@@ -69,53 +77,58 @@ namespace FileSyncDesktop.ViewModels
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Notifying.");
-            FileSourcePath = _fileWatcherSettings.FilePath;
-            FilterArgument = _fileWatcherSettings.FileType;
-            ServerAddress = _fileWatcherSettings.ServerAddress;
+            _fileWatcherSettings.FilePath = FileSourcePath;
+            _fileWatcherSettings.FileType = FilterArgument;
+            _fileWatcherSettings.ServerAddress = ServerAddress;
+            _fileWatcherSettings.ServerPort = ServerPort.ToString();
+            LogCurrentConfig(methodName);
+            _logger.Flush();
+        }
 
-            if (int.TryParse(_fileWatcherSettings.ServerPort, out int srvrPort))
+        public bool CanClearConfiguration
+        {
+            get
             {
-                ServerPort = srvrPort;
+                return true;
             }
-            else
+        }
+
+
+        public bool CanLoadConfiguration
+        {
+            get
             {
-                ServerPort = -1;
+                return true;
             }
-
-            _logger.Flush();
         }
 
-        public bool CanClearConfiguration()
+        public bool CanSetConfiguration
         {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Hard-coded TRUE.");
-            _logger.Flush();
-            return true;
-        }
+            get
+            {
+                if(_fileWatcherSettings.FileSourcePathIsValid(FileSourcePath) &&
+                    _fileWatcherSettings.FilterArgumentMatchesPattern(FilterArgument) &&
+                    _fileWatcherSettings.ServerPortInValidRange(ServerPort)
+                    )
+                {
+                    return true;
+                }
 
-        public bool CanLoadConfiguration()
-        {
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Hard-coded TRUE.");
-            _logger.Flush();
-            return true;
-        }
-
-        public bool CanSetConfiguration()
-        {
-            // todo: implement if this becomes necessary
-            string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Hard-coded FALSE.");
-            _logger.Flush();
-            return false;
+                return false;
+            }
         }
 
         public void ClearConfiguration()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Called.");
+            _logger.Data(methodName, "Clearing File Watcher settings.");
             _fileWatcherSettings.RemoveFileSettings();
             _fileWatcherSettings.RemoveServerSettings();
+            _logger.Data(methodName, "Clearing form entries.");
+            FileSourcePath = string.Empty;
+            FilterArgument = string.Empty;
+            ServerAddress = string.Empty;
+            ServerPort = _defaultServerPort;
             NotifyConfigChanged();
             _logger.Flush();
         }
@@ -124,22 +137,57 @@ namespace FileSyncDesktop.ViewModels
         public void LoadConfiguration()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Called.");
-            _logger.Flush();
+            _logger.Data(methodName, "Called. Getting config settings from Environment Variables.");
             _fileWatcherSettings.GetSettingsFromEnvVars();
-            NotifyConfigChanged();
-            // use Conductor to launch chile ViewModels
-            ActivateItem(IoC.Get<FileListViewModel>());
+            FileSourcePath = _fileWatcherSettings.FilePath;
+            FilterArgument = _fileWatcherSettings.FileType;
+            ServerAddress = _fileWatcherSettings.ServerAddress;
+            ServerPort = _fileWatcherSettings.ServerPort;
+            LogCurrentConfig(methodName);
+            _logger.Flush();
         }
 
         // set user-entered configuration items into the settings object
         public void SetConfiguration()
         {
-            // todo: implement if this becomes necessary
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Called.");
-            _logger.Data(methodName, "NO IMPLEMENTATION!");
+
+            if (CanSetConfiguration)
+            {
+                _logger.Data(methodName, "Using arguments in form to set FileWatcher Configuration.");
+                _fileWatcherSettings.SetFileSettings(FileSourcePath, FilterArgument);
+                _fileWatcherSettings.SetServerSettings(ServerAddress, ServerPort);
+                LogCurrentConfig(methodName);
+            }
+            else
+            {
+                _logger.Data(methodName, "Settings not valid, returning to Main View window.");
+            }
+
             _logger.Flush();
+
+        }
+
+        private void LogCurrentConfig(string methodName)
+        {
+            _logger.Data(methodName, "Path, Filter, Server address and Port settings:");
+            _logger.Data(methodName, FileSourcePath);
+            _logger.Data(methodName, FilterArgument);
+            _logger.Data(methodName, ServerAddress);
+            _logger.Data(methodName, ServerPort.ToString());
+        }
+
+        public void OpenFileMonitor() {
+            string methodName = MethodBase.GetCurrentMethod().Name;
+
+            if (_fileWatcherSettings.HasFileSettings() && _fileWatcherSettings.HasServerSettings())
+            {
+                _logger.Data(methodName, "Settings not valid, returning to Main View window.");
+            }
+
+            _logger.Data(methodName, "Launching the File Watcher view.");
+            // use Conductor to launch child ViewModel
+            ActivateItem(IoC.Get<FileListViewModel>());
         }
 
         public void MenuAbout()

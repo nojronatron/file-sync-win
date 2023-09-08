@@ -2,7 +2,7 @@
 using FileSyncDesktop.Collections;
 using FileSyncDesktop.Helpers;
 using FileSyncDesktop.Library.Api;
-using FileSyncDesktop.Models;
+using FileSyncDesktop.Library.Helpers;
 using FileSyncDesktop.ViewModels;
 using System;
 using System.Collections.Generic;

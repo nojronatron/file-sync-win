@@ -1,5 +1,5 @@
-﻿using System;
-using System.Configuration;
+﻿using FileSyncDesktop.Library.Helpers;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -9,23 +9,23 @@ namespace FileSyncDesktop.Library.Api
     {
         private static HttpClient _apiClient;
         public HttpClient ApiClient { get { return _apiClient; } }
+        private readonly IFileWatcherSettings _fileWatcherSettings;
 
-        public APIHelper()
+        public APIHelper(IFileWatcherSettings fileWatcherSettings)
         {
+            _fileWatcherSettings = fileWatcherSettings;
             InitializeClient();
         }
 
         private void InitializeClient()
         {
-            string api = ConfigurationManager.AppSettings["api"];
+            string api = $"http://{_fileWatcherSettings.ServerAddress}:{_fileWatcherSettings.ServerPort}/";
 
-            if (api == null || api == string.Empty)
+            _apiClient = new HttpClient
             {
-                api = "api";
-            }
+                BaseAddress = new Uri(api)
+            };
 
-            _apiClient = new HttpClient();
-            _apiClient.BaseAddress = new Uri(api);
             _apiClient.DefaultRequestHeaders.Accept.Clear();
             _apiClient.DefaultRequestHeaders.Accept.Clear();
             _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

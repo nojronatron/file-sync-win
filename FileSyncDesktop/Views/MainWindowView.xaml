@@ -46,16 +46,17 @@
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server" />
-                    <TextBox x:Name="ServerAddress" VerticalAlignment="Center" Background="White" ToolTip="Example: 192.168.0.10" />
+                    <TextBox x:Name="ServerAddress" VerticalAlignment="Center" Background="White" ToolTip="localhost or an IPv4 address" />
                 </DockPanel>
                 <DockPanel VerticalAlignment="Stretch">
                     <Label Content="Server Port" />
-                    <TextBox x:Name="ServerPort" VerticalAlignment="Center" Background="White" ToolTip="Example: 6001" />
+                    <TextBox x:Name="ServerPort" VerticalAlignment="Center" Background="White" ToolTip="Example: 7001" />
                 </DockPanel>
                 <StackPanel>
                     <Button x:Name="ClearConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Clear server and file configuration settings.">Clear</Button>
-                    <Button x:Name="LoadConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Load file and server configuration settings.">Load</Button>
-                    <Button x:Name="SetConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Set manually entered file and server configuration settings.">Set</Button>
+                    <Button x:Name="LoadConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Load file and server configuration settings from FSW_ environment variables.">Load</Button>
+                    <Button x:Name="SetConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Set the manually entered form settings.">Set</Button>
+                    <Button x:Name="OpenFileMonitor" VerticalAlignment="Center" Width="130" ToolTip="Open file monitor with the displayed settings.">Open</Button>
                 </StackPanel>
             </StackPanel>
             

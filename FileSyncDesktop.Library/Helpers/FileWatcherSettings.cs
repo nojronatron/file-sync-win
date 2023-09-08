@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace FileSyncDesktop.Library.Helpers
@@ -9,9 +10,8 @@ namespace FileSyncDesktop.Library.Helpers
         public string FileType { get; set; } = string.Empty;
         public string ServerAddress { get; set; } = string.Empty;
         public string ServerPort { get; set; } = string.Empty;
-        private static readonly Regex _filepathRegex = new Regex(@"^\w:\\((\S)*\\{0,1})*$");
         private static readonly Regex _filterRegex = new Regex(@"^\*\.\w{0,4}$");
-        private static readonly int _minServerPort = 8001;
+        private static readonly int _minServerPort = 5000;
         private static readonly int _maxServerPort = 65535;
 
         public FileWatcherSettings() { }
@@ -69,13 +69,7 @@ namespace FileSyncDesktop.Library.Helpers
 
         public bool FileSourcePathIsValid(string value)
         {
-            var matches = _filepathRegex.Matches(value);
-            return matches.Count > 0 && FilePathExists(value);
-        }
-
-        public bool FilePathExists(string value)
-        {
-            return System.IO.Directory.Exists(value);
+            return Directory.Exists(value);
         }
 
         public bool FilterArgumentMatchesPattern(string value)

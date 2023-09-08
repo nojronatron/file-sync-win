@@ -9,7 +9,7 @@ namespace FileSyncDesktop.ViewModels
     public class MainWindowViewModel : Conductor<object>
     {
         private static readonly string _defaultServerAddress = "localhost";
-        private static readonly string _defaultServerPort = "8001";
+        private static readonly string _defaultServerPort = "5001";
         private static readonly string _defaultFilepathArgument = @"C:\Users\Public\Documents\";
         private static readonly string _defaultFilterArgument = "*.mime";
 
@@ -81,11 +81,7 @@ namespace FileSyncDesktop.ViewModels
             _fileWatcherSettings.FileType = FilterArgument;
             _fileWatcherSettings.ServerAddress = ServerAddress;
             _fileWatcherSettings.ServerPort = ServerPort.ToString();
-            _logger.Data(methodName, "Path, Filter, Server address and Port settings:");
-            _logger.Data(methodName, FileSourcePath);
-            _logger.Data(methodName, FilterArgument);
-            _logger.Data(methodName, ServerAddress);
-            _logger.Data(methodName, ServerPort.ToString());
+            LogCurrentConfig(methodName);
             _logger.Flush();
         }
 
@@ -147,6 +143,7 @@ namespace FileSyncDesktop.ViewModels
             FilterArgument = _fileWatcherSettings.FileType;
             ServerAddress = _fileWatcherSettings.ServerAddress;
             ServerPort = _fileWatcherSettings.ServerPort;
+            LogCurrentConfig(methodName);
             _logger.Flush();
         }
 
@@ -154,11 +151,30 @@ namespace FileSyncDesktop.ViewModels
         public void SetConfiguration()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
-            _logger.Data(methodName, "Using arguments in form to set FileWatcher Configuration.");
-            _fileWatcherSettings.SetFileSettings(FileSourcePath, FilterArgument);
-            _fileWatcherSettings.SetServerSettings(ServerAddress, ServerPort);
-            _logger.Data(methodName, "Launching the File Watcher view.");
+
+            if (CanSetConfiguration)
+            {
+                _logger.Data(methodName, "Using arguments in form to set FileWatcher Configuration.");
+                _fileWatcherSettings.SetFileSettings(FileSourcePath, FilterArgument);
+                _fileWatcherSettings.SetServerSettings(ServerAddress, ServerPort);
+                LogCurrentConfig(methodName);
+            }
+            else
+            {
+                _logger.Data(methodName, "Settings not valid, returning to Main View window.");
+            }
+
             _logger.Flush();
+
+        }
+
+        private void LogCurrentConfig(string methodName)
+        {
+            _logger.Data(methodName, "Path, Filter, Server address and Port settings:");
+            _logger.Data(methodName, FileSourcePath);
+            _logger.Data(methodName, FilterArgument);
+            _logger.Data(methodName, ServerAddress);
+            _logger.Data(methodName, ServerPort.ToString());
         }
 
         public void OpenFileMonitor() {
@@ -168,6 +184,7 @@ namespace FileSyncDesktop.ViewModels
             {
                 _logger.Data(methodName, "Settings not valid, returning to Main View window.");
             }
+
             _logger.Data(methodName, "Launching the File Watcher view.");
             // use Conductor to launch child ViewModel
             ActivateItem(IoC.Get<FileListViewModel>());

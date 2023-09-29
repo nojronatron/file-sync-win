@@ -9,7 +9,7 @@ namespace FileSyncDesktop.ViewModels
     public class MainWindowViewModel : Conductor<object>
     {
         private static readonly string _defaultServerAddress = "localhost";
-        private static readonly string _defaultServerPort = "5001";
+        private static readonly string _defaultServerPort = "5000";
         private static readonly string _defaultFilepathArgument = @"C:\Users\Public\Documents\";
         private static readonly string _defaultFilterArgument = "*.mime";
 
@@ -17,7 +17,7 @@ namespace FileSyncDesktop.ViewModels
         private readonly IRmzLogger _logger;
 
         public MainWindowViewModel(
-            IFileWatcherSettings fileWatcherSettings, 
+            IFileWatcherSettings fileWatcherSettings,
             IRmzLogger logger)
         {
             _logger = logger;
@@ -106,7 +106,7 @@ namespace FileSyncDesktop.ViewModels
         {
             get
             {
-                if(_fileWatcherSettings.FileSourcePathIsValid(FileSourcePath) &&
+                if (_fileWatcherSettings.FileSourcePathIsValid(FileSourcePath) &&
                     _fileWatcherSettings.FilterArgumentMatchesPattern(FilterArgument) &&
                     _fileWatcherSettings.ServerPortInValidRange(ServerPort)
                     )
@@ -138,12 +138,18 @@ namespace FileSyncDesktop.ViewModels
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Called. Getting config settings from Environment Variables.");
-            _fileWatcherSettings.GetSettingsFromEnvVars();
-            FileSourcePath = _fileWatcherSettings.FilePath;
-            FilterArgument = _fileWatcherSettings.FileType;
-            ServerAddress = _fileWatcherSettings.ServerAddress;
-            ServerPort = _fileWatcherSettings.ServerPort;
-            LogCurrentConfig(methodName);
+            if (_fileWatcherSettings.GetSettingsFromEnvVars())
+            {
+                FileSourcePath = _fileWatcherSettings.FilePath;
+                FilterArgument = _fileWatcherSettings.FileType;
+                ServerAddress = _fileWatcherSettings.ServerAddress;
+                ServerPort = _fileWatcherSettings.ServerPort;
+                LogCurrentConfig(methodName);
+            }
+            else
+            {
+                _logger.Data(methodName, "Unable to load Environment Variable settings.");
+            }
             _logger.Flush();
         }
 
@@ -177,23 +183,30 @@ namespace FileSyncDesktop.ViewModels
             _logger.Data(methodName, ServerPort.ToString());
         }
 
-        public void OpenFileMonitor() {
+        public void OpenFileMonitor()
+        {
             string methodName = MethodBase.GetCurrentMethod().Name;
+            _logger.Data(methodName, "Called.");
 
             if (_fileWatcherSettings.HasFileSettings() && _fileWatcherSettings.HasServerSettings())
             {
-                _logger.Data(methodName, "Settings not valid, returning to Main View window.");
+                _logger.Data(methodName, "CanOpenFileMonitor is True. Launching the File Watcher view.");
+                _logger.Flush();
+                // use Conductor to launch child ViewModel
+                ActivateItem(IoC.Get<FileListViewModel>());
             }
-
-            _logger.Data(methodName, "Launching the File Watcher view.");
-            // use Conductor to launch child ViewModel
-            ActivateItem(IoC.Get<FileListViewModel>());
+            else
+            {
+                // todo: add status message indicating why file monitor can't be opened
+                _logger.Data(methodName, "CanOpenFileMonitor is False (Settings not valid). Returning to Main View window.");
+                _logger.Flush();
+            }
         }
 
-        public void MenuAbout()
+        public void HelpAbout()
         {
             string messageBoxTitle = "About File Sync Win";
-            string messageBoxText = "File Sync Win\n\nVersion 0.0,1\n\nCreated by: Jon Rumsey\n\nhttps://github.com/nojronatron/file-sync-win";
+            string messageBoxText = "File Sync Win\n\nVersion 0.0.1\n\nCreated by: Jon Rumsey\n\nhttps://github.com/nojronatron/file-sync-win";
             _logger.Data(messageBoxText, messageBoxTitle);
             MessageBox.Show(
                 messageBoxText,
@@ -204,7 +217,12 @@ namespace FileSyncDesktop.ViewModels
             _logger.Flush();
         }
 
-        public void MenuFileExit()
+        public void MinimizeWindow()
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        public void CloseApp()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Exiting MainWindowView.");

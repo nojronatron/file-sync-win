@@ -24,12 +24,32 @@ namespace FileSyncDesktop.Library.Helpers
             ServerPort = serverPort;
         }
 
-        public void GetSettingsFromEnvVars()
+        public bool GetSettingsFromEnvVars()
         {
-            FilePath = Environment.GetEnvironmentVariable("FSW_FILEPATH");
-            FileType = Environment.GetEnvironmentVariable("FSW_FILETYPE");
-            ServerAddress = Environment.GetEnvironmentVariable("FSW_SERVERADDR");
-            ServerPort = Environment.GetEnvironmentVariable("FSW_SERVERPORT");
+            string filePath = Environment.GetEnvironmentVariable("FSW_FILEPATH");
+            string fileType = Environment.GetEnvironmentVariable("FSW_FILETYPE");
+            string serverAddress = Environment.GetEnvironmentVariable("FSW_SERVERADDR");
+            string serverPort = Environment.GetEnvironmentVariable("FSW_SERVERPORT");
+
+            if (FileSourcePathIsValid(filePath) &&
+                FilterArgumentMatchesPattern(fileType) &&
+                !string.IsNullOrEmpty(serverAddress) &&
+                ServerPortInValidRange(serverPort))
+            {
+                FilePath = filePath;
+                FileType = fileType;
+                ServerAddress = serverAddress;
+                ServerPort = serverPort;
+                return true;
+            }
+            else
+            {
+                FilePath = string.Empty;
+                FileType = string.Empty;
+                ServerAddress = string.Empty;
+                ServerPort = string.Empty;
+                return false;
+            }
         }
 
         public bool HasFileSettings()

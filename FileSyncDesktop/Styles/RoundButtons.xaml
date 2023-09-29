@@ -1,0 +1,43 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate x:Key="roundHelpButton" TargetType="Button">
+        <Grid>
+            <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding Foreground}" />
+            <ContentPresenter 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Content="?"
+                ToolTip="About this program" />
+        </Grid>
+    </ControlTemplate>
+    <ControlTemplate x:Key="roundMinimizeButton" TargetType="Button">
+        <Grid>
+            <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding Foreground}" />
+            <ContentPresenter 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Content="-"
+                ToolTip="Minimize Window" />
+        </Grid>
+    </ControlTemplate>
+    <ControlTemplate x:Key="roundCloseButton" TargetType="Button">
+        <Grid>
+            <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding Foreground}" />
+            <ContentPresenter 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Content="X" 
+                ToolTip="Close Application" />
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource TextBoxBorder}" />
+        <Setter Property="Background" Value="{StaticResource OffWhiteBrush}" />
+        <Setter Property="Margin" Value="2" />
+    </Style>
+    
+</ResourceDictionary>

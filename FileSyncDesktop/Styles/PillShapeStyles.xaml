@@ -1,0 +1,189 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Style x:Key="ButtonFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border>
+                        <Rectangle Margin="2"
+                                   StrokeThickness="1"
+                                   Stroke="{StaticResource DarkerOrangeBrush}"
+                                   StrokeDashArray="1 2" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ClearButtonPillStyle" TargetType="Button">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+        <Setter Property="Width" Value="140" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border TextBlock.Foreground="{TemplateBinding Foreground}"
+                            x:Name="Border"
+                            CornerRadius="15"
+                            BorderThickness="3"
+                            BorderBrush="{StaticResource PrimaryBlackBrush}">
+                        <Border.Background>
+                            <SolidColorBrush Color="{StaticResource OrangeColor}" />
+                        </Border.Background>
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualStateGroup.Transitions>
+                                    <VisualTransition GeneratedDuration="0:0:0.5" />
+                                    <VisualTransition GeneratedDuration="0"
+                                                      To="Pressed" />
+                                </VisualStateGroup.Transitions>
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver" />
+                                <VisualState x:Name="Pressed" />
+                                <VisualState x:Name="Disabled" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Margin="2"
+                                      RecognizesAccessKey="True" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefault"
+                                 Value="true">
+                            <Setter TargetName="Border"
+                                    Property="BorderBrush">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource ControlMouseOverColor}" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LoadButtonPillStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBlackBrush}" />
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="FontFamily" Value="Verdana, Lucida Sans"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Width" Value="140" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="15"
+                            BorderThickness="3"
+                            BorderBrush="{StaticResource PrimaryBlackBrush}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{StaticResource LightBlueBrush1}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SetButtonPillStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBlackBrush}" />
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="FontFamily" Value="Verdana, Lucida Sans"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="Width" Value="140" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="15"
+                            BorderThickness="3"
+                            BorderBrush="{StaticResource PrimaryBlackBrush}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{StaticResource MidBlueBrush}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="OpenButtonPillStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="{StaticResource DefaultWhiteBrush}" />
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="FontFamily" Value="Verdana, Lucida Sans"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Width" Value="140" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="15"
+                            BorderThickness="3"
+                            BorderBrush="{StaticResource PrimaryBlackBrush}"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{StaticResource DarkBlueBrush2}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HeaderLabelPillStyle" TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource OffWhiteBrush}" />
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="FontFamily" Value="Tahoma, Lucida Sans, Arial"/>
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Label">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InputFormLabels" TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBlackBrush}" />
+        <Setter Property="FontFamily" Value="Verdana, Lucida Sans"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Margin" Value="6" />
+        <Setter Property="Width" Value="108" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Label">
+                    <ContentPresenter HorizontalAlignment="Left"
+                                          VerticalAlignment="Center" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="InputFormTextBoxes" TargetType="TextBox">
+        <Setter Property="Foreground" Value="{StaticResource PrimaryBlackBrush}" />
+        <Setter Property="Background" Value="{StaticResource OffWhiteBrush}" />
+        <Setter Property="FontFamily" Value="Verdana, Lucida Sans"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Width" Value="200" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
+
+</ResourceDictionary>

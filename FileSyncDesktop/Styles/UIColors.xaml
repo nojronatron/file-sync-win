@@ -1,0 +1,64 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Background Colors -->
+    <Color x:Key="PrimaryBackColor">FloralWhite</Color>
+    <Color x:Key="ButtonBackColor">Gainsboro</Color>
+    <Color x:Key="AllWhiteBackColor">White</Color>
+    <Color x:Key="PrimaryTitleHeaderColor">MediumBlue</Color>
+    <Color x:Key="DarkGrayBackColor">DimGray</Color>
+    
+    <!-- Window Border Colors -->
+    <Color x:Key="PrimaryBorderColor">Black</Color>
+    <Color x:Key="SecondaryBorderColor">MidnightBlue</Color>
+    <Color x:Key="FadeBorderColorMiddle">MediumBlue</Color>
+    <Color x:Key="FadeBorderColorEnd">DodgerBlue</Color>
+
+    <!-- Color Palette -->
+    <Color x:Key="DarkBlueColor">DarkBlue</Color>
+    <Color x:Key="DeepSkyBlueColor">DeepSkyBlue</Color>
+    <Color x:Key="LightSkyBlueColor">LightSkyBlue</Color>
+    <Color x:Key="OrangeColor">Orange</Color>
+    <Color x:Key="DarkOrangeColor">DarkOrange</Color>
+    <Color x:Key="DarkerOrangeColor">SaddleBrown</Color>
+    <Color x:Key="GreenColor">Green</Color>
+
+    <!-- SolidColorBrush Palette -->
+    <SolidColorBrush x:Key="PrimaryWhiteBrush">White</SolidColorBrush>
+    <SolidColorBrush x:Key="OffWhiteBrush">Gainsboro</SolidColorBrush>
+    <SolidColorBrush x:Key="DefaultWhiteBrush">FloralWhite</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryBlackBrush">Black</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryBlueBrush">Blue</SolidColorBrush>
+    <SolidColorBrush x:Key="DarkBlueBrush1">DarkBlue</SolidColorBrush>
+    <SolidColorBrush x:Key="DarkBlueBrush2">MidnightBlue</SolidColorBrush>
+    <SolidColorBrush x:Key="MidBlueBrush">DodgerBlue</SolidColorBrush>
+    <SolidColorBrush x:Key="LightBlueBrush1">DeepSkyBlue</SolidColorBrush>
+    <SolidColorBrush x:Key="LighterBlueBrush">LightSkyBlue</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryOrangeBrush">Orange</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryGreenBrush">MediumSeaGreen</SolidColorBrush>
+    <SolidColorBrush x:Key="DarkerOrangeBrush">SaddleBrown</SolidColorBrush>
+
+    <!-- Font Colors -->
+    <SolidColorBrush x:Key="MessageHeaderTextColor">Blue</SolidColorBrush>
+    <SolidColorBrush x:Key="ReadonlyTextColor">DimGray</SolidColorBrush>
+
+    <!-- Panel Colors -->
+
+    <!-- Button Colors -->
+    <SolidColorBrush x:Key="SubmitButtonFontColor">Black</SolidColorBrush>
+    <SolidColorBrush x:Key="SubmitButtonBackgroundColor">LightSkyBlue</SolidColorBrush>
+    <SolidColorBrush x:Key="ClearButtonBackgroundColor">Orange</SolidColorBrush>
+    <Color x:Key="ControlMouseOverColor">MediumSeaGreen</Color>
+    <Color x:Key="ControlPressedColor">LightSkyBlue</Color>
+    <Color x:Key="PressedBorderDarkColor">Blue</Color>
+    <Color x:Key="PressedBorderLightColor">DeepSkyBlue</Color>
+    <Color x:Key="DisabledControlDarkColor">DimGray</Color>
+    <Color x:Key="DisabledForegroundColor">SlateGray</Color>
+    <Color x:Key="DisabledBorderDarkColor">DarkSlateGray</Color>
+
+    <!-- Other Colors -->
+    <SolidColorBrush x:Key="BoxShadowColor">White</SolidColorBrush>
+    <SolidColorBrush x:Key="TextBoxBorder">Black</SolidColorBrush>
+    <SolidColorBrush x:Key="TextAreaOutline">Orange</SolidColorBrush>
+
+</ResourceDictionary>

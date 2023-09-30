@@ -14,54 +14,15 @@
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
     >
 
+    <!-- set default visual state groups -->
     <Border>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="CommonStates">
-                <VisualState x:Name="Normal"/>
-                <VisualState x:Name="MouseOver">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TemplateButtonAlpha" 
-                                                       Storyboard.TargetProperty="(Control.Background)">
-                            <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{StaticResource PrimaryWhiteBrush}"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Pressed">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TemplateButtonAlpha" 
-                                                       Storyboard.TargetProperty="(Control.Background)">
-                            <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{StaticResource LightBlueBrush1}"/>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TemplateButtonAlpha" 
-                                                          Storyboard.TargetProperty="(Control.BorderThickness)">
-                            <EasingThicknessKeyFrame KeyTime="00:00:00" Value="5,5,5,5"/>
-                        </ThicknessAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Disabled">
-                    <Storyboard>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="TemplateButtonAlpha" 
-                                                       Storyboard.TargetProperty="(Control.Background)">
-                            <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{StaticResource DarkBlueBrush2}"/>
-                        </ObjectAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-                <VisualState x:Name="Unfocused"/>
-                <VisualState x:Name="Focused">
-                    <Storyboard>
-                        <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="TemplateButtonAlpha" 
-                                                          Storyboard.TargetProperty="(Control.BorderThickness)">
-                            <EasingThicknessKeyFrame KeyTime="00:00:00" Value="4,4,4,4"/>
-                        </ThicknessAnimationUsingKeyFrames>
-                    </Storyboard>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+
         <Border.Background>
             <ImageBrush ImageSource="\Images\bf-back-image.jpg" 
                         Stretch="Uniform" />
         </Border.Background>
 
+        <!-- window definition including border, grid, and panels -->
         <Border CornerRadius="20" 
                 BorderThickness="4" 
                 Opacity=".92">

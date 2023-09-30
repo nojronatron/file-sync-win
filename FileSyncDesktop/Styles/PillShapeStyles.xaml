@@ -2,68 +2,167 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    <Style x:Key="ButtonFocusVisual">
-        <Setter Property="Control.Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Border>
-                        <Rectangle Margin="2"
-                                   StrokeThickness="1"
-                                   Stroke="{StaticResource DarkerOrangeBrush}"
-                                   StrokeDashArray="1 2" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
-    <Style x:Key="ClearButtonPillStyle" TargetType="Button">
+    <Style x:Key="ClearButtonPillStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
-        <Setter Property="Width" Value="140" />
+        <Setter Property="FontFamily" Value="Verdana, Lucida Sans"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="MinWidth" Value="140" />
+        <Setter Property="Padding" Value="5,3" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border TextBlock.Foreground="{TemplateBinding Foreground}"
-                            x:Name="Border"
-                            CornerRadius="15"
-                            BorderThickness="3"
-                            BorderBrush="{StaticResource PrimaryBlackBrush}">
-                        <Border.Background>
-                            <SolidColorBrush Color="{StaticResource OrangeColor}" />
-                        </Border.Background>
-
+                    <Border Name="RootElement">
                         <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BorderColor"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{StaticResource DarkBlueColor}"
+                                                        Duration="0:0:0.4" />
+                                        <ColorAnimation Storyboard.TargetName="BackgroundColor"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{StaticResource OrangeColor}"
+                                                        Duration="0:0:0.4" />
+                                        <ColorAnimation Storyboard.TargetName="FontColor"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{StaticResource PrimaryBorderColor}"
+                                                        Duration="0:0:0.4" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BorderColor"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{StaticResource OrangeColor}"
+                                                        Duration="0:0:0.4" />
+                                        <ColorAnimation Storyboard.TargetName="BackgroundColor"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{StaticResource DarkerOrangeColor}"
+                                                        Duration="0:0:0.4" />
+                                        <ColorAnimation Storyboard.TargetName="FontColor"
+                                                        Storyboard.TargetProperty="Color"
+                                                        To="{StaticResource PrimaryBackColor}"
+                                                        Duration="0:0:0.4" />
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MouseOverBorder"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BackgroundColor" 
+                                                        Storyboard.TargetProperty="Color" 
+                                                        To="{StaticResource DarkOrangeColor}" 
+                                                        Duration="0:0:0.4" />
+                                        <ColorAnimation Storyboard.TargetName="FontColor" 
+                                                        Storyboard.TargetProperty="Color" 
+                                                        To="{StaticResource DarkerOrangeColor}" 
+                                                        Duration="0:0:0.4" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="BorderColor" 
+                                                        Storyboard.TargetProperty="Color" 
+                                                        To="DarkGray" 
+                                                        Duration="0:0:0.4" />
+                                        <ColorAnimation Storyboard.TargetName="FontColor" 
+                                                        Storyboard.TargetProperty="Color" 
+                                                        To="DarkGray" 
+                                                        Duration="0:0:0.4" />
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="FocusStates">
                                 <VisualStateGroup.Transitions>
-                                    <VisualTransition GeneratedDuration="0:0:0.5" />
-                                    <VisualTransition GeneratedDuration="0"
-                                                      To="Pressed" />
+                                    <VisualTransition GeneratedDuration="0:0:0.4" />
                                 </VisualStateGroup.Transitions>
-                                <VisualState x:Name="Normal" />
-                                <VisualState x:Name="MouseOver" />
-                                <VisualState x:Name="Pressed" />
-                                <VisualState x:Name="Disabled" />
+                                <VisualState x:Name="Focused">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="FocusBorder"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <EasingDoubleKeyFrame KeyTime="0"
+                                                                  Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                                       Storyboard.TargetName="ContentSite">
+                                            <EasingDoubleKeyFrame KeyTime="0" 
+                                                                  Value="1"/>
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unfocused">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="FocusBorder"
+                                                                       Storyboard.TargetProperty="(UIElement.Opacity)">
+                                            <EasingDoubleKeyFrame KeyTime="0"
+                                                                  Value="1" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+                                                                       Storyboard.TargetName="ContentSiteWhiteForeground">
+                                            <EasingDoubleKeyFrame KeyTime="0" 
+                                                                  Value="1"/>
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Margin="2"
-                                      RecognizesAccessKey="True" />
-                    </Border>
 
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsDefault"
-                                 Value="true">
-                            <Setter TargetName="Border"
-                                    Property="BorderBrush">
-                                <Setter.Value>
-                                    <SolidColorBrush Color="{StaticResource ControlMouseOverColor}" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                        <Grid Background="Transparent">
+                            <Border x:Name="BaseBorder" 
+                                    BorderThickness="3"
+                                    CornerRadius="15">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush x:Name="BorderColor"
+                                                     Color="{StaticResource FadeBorderColorMiddle}" />
+                                </Border.BorderBrush>
+                                <Border.Background>
+                                    <SolidColorBrush x:Name="BackgroundColor"
+                                                     Color="{StaticResource FadeBorderColorEnd}" />
+                                </Border.Background>
+                            </Border>
+                            <Border x:Name="FocusBorder"
+                                    BorderThickness="3"
+                                    CornerRadius="15"
+                                    Background="{DynamicResource PrimaryOrangeBrush}"
+                                    Opacity="0" />
+                            <Border x:Name="MouseOverBorder"
+                                    BorderThickness="3"
+                                    CornerRadius="15"
+                                    Background="{DynamicResource DarkerOrangeBrush}"
+                                    Opacity="0" />
+                            <ContentPresenter x:Name="ContentSite"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                ContentSource="Content"
+                                                Content="{TemplateBinding Content}"
+                                                Margin="2">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush x:Name="FontColor"
+                                                     Color="{StaticResource PrimaryBorderColor}" />
+                                </TextBlock.Foreground>
+                            </ContentPresenter>
+                            <ContentPresenter x:Name="ContentSiteWhiteForeground"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Content"
+                                              Margin="2"
+                                              Opacity="0">
+                                <TextBlock.Foreground>
+                                    <!-- defines light font color -->
+                                    <SolidColorBrush Color="{StaticResource AllWhiteBackColor}" />
+                                </TextBlock.Foreground>
+                            </ContentPresenter>
+                        </Grid>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -183,14 +183,27 @@ namespace FileSyncDesktop.ViewModels
             _logger.Data(methodName, ServerPort.ToString());
         }
 
-        public void OpenFileMonitor()
+        public bool CanStartFileMonitor
+        {
+            get
+            {
+                if (_fileWatcherSettings.HasFileSettings() && _fileWatcherSettings.HasServerSettings())
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        public void StartFileMonitor()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Called.");
 
             if (_fileWatcherSettings.HasFileSettings() && _fileWatcherSettings.HasServerSettings())
             {
-                _logger.Data(methodName, "CanOpenFileMonitor is True. Launching the File Watcher view.");
+                _logger.Data(methodName, "CanStartFileMonitor is True. Launching the File Watcher view.");
                 _logger.Flush();
                 // use Conductor to launch child ViewModel
                 ActivateItem(IoC.Get<FileListViewModel>());
@@ -198,7 +211,7 @@ namespace FileSyncDesktop.ViewModels
             else
             {
                 // todo: add status message indicating why file monitor can't be opened
-                _logger.Data(methodName, "CanOpenFileMonitor is False (Settings not valid). Returning to Main View window.");
+                _logger.Data(methodName, "CanStartFileMonitor is False (Settings not valid). Returning to Main View window.");
                 _logger.Flush();
             }
         }

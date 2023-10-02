@@ -27,27 +27,27 @@
                 BorderThickness="4" 
                 Opacity=".92">
             <Border.BorderBrush>
-                <LinearGradientBrush  StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="{StaticResource SecondaryBorderColor}" Offset="0.0"/>
-                    <GradientStop Color="{StaticResource FadeBorderColorMiddle}" Offset="0.50"/>
-                    <GradientStop Color="{StaticResource FadeBorderColorEnd}" Offset="1.0"/>
+                <LinearGradientBrush  StartPoint="1,1" EndPoint="0,0">
+                    <GradientStop Color="{StaticResource PrimaryDarkBlueColor}" Offset="0.0"/>
+                    <GradientStop Color="{StaticResource PrimaryLightBlueColor}" Offset="0.5"/>
+                    <GradientStop Color="{StaticResource PrimaryBlueColor}" Offset="1.0"/>
                 </LinearGradientBrush>
             </Border.BorderBrush>
 
             <Border.Background>
-                <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
-                    <GradientStop Color="{StaticResource PrimaryBackColor}" Offset="0.0"/>
-                    <GradientStop Color="{StaticResource DarkGrayBackColor}" Offset="1.0"/>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0.5">
+                    <GradientStop Color="{StaticResource PrimaryGrayColor}" Offset="0.5"/>
+                    <GradientStop Color="{StaticResource PrimaryLightGrayColor}" Offset="1.0"/>
                 </LinearGradientBrush>
             </Border.Background>
 
             <Grid Margin="6">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"/>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="25" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -95,14 +95,15 @@
                     </DockPanel>
                     <DockPanel VerticalAlignment="Stretch">
                         <Label Style="{StaticResource InputFormLabels}"
-                               Content="Folder Path"/>
+                               Content="Path"/>
                         <TextBox x:Name="FileSourcePath" 
-                            Style="{StaticResource InputFormTextBoxes}"
-                            ToolTip="Example: C:\RMS Express\N0NE\Messages" MinWidth="200"/>
+                                 Style="{StaticResource InputFormTextBoxes}"
+                                 ToolTip="Example: C:\RMS Express\N0NE\Messages">
+                        </TextBox>
                     </DockPanel>
                     <DockPanel VerticalAlignment="Stretch">
                         <Label Style="{StaticResource InputFormLabels}"
-                               Content="File Extension" />
+                               Content="Filter" />
                         <TextBox x:Name="FilterArgument" 
                             Style="{StaticResource InputFormTextBoxes}"
                             ToolTip="Example: *.mime" />
@@ -126,11 +127,6 @@
                 <WrapPanel Grid.Column="1"
                            Grid.Row="2"
                            HorizontalAlignment="Left">
-                    <Button x:Name="ClearConfiguration"
-                            Style="{StaticResource ClearButtonPillStyle}"
-                            ToolTip="Clear the configuration entries."
-                            Content="Clear" 
-                            />
                     <Button x:Name="LoadConfiguration"
                             Style="{StaticResource LoadButtonPillStyle}"
                             ToolTip="Load file and server configuration settings from FSW_ environment variables."
@@ -141,21 +137,15 @@
                             ToolTip="Set the manually entered form settings."
                             Content="Set" 
                             />
-                    <Button x:Name="OpenFileMonitor" 
-                            Style="{StaticResource OpenButtonPillStyle}"
-                            ToolTip="Open file monitor with the displayed settings."
-                            Content="Open" 
+                    <Button x:Name="ClearConfiguration"
+                            Style="{StaticResource ClearButtonPillStyle}"
+                            ToolTip="Clear the configuration entries."
+                            Content="Clear" 
                             />
-                    <Button x:Name="TemplateButtonAlpha" 
-                            Content="TemplateButton" 
-                            Height="28" Width="140" 
-                            Background="{StaticResource PrimaryGreenBrush}" 
-                            BorderBrush="{StaticResource PrimaryBlackBrush}" 
-                            Foreground="{StaticResource PrimaryWhiteBrush}" 
-                            FontFamily="Verdana" 
-                            FontSize="14" 
-                            BorderThickness="3,3,3,3" 
-                            UseLayoutRounding="False"
+                    <Button x:Name="OpenFileMonitor" 
+                            Style="{StaticResource StartButtonPillStyle}"
+                            ToolTip="Open file monitor with the displayed settings."
+                            Content="Start Monitoring" 
                             />
                 </WrapPanel>
 
@@ -178,7 +168,7 @@
                            FontSize="12"
                            FontFamily="Verdana"
                            FontWeight="Bold"
-                           Foreground="{StaticResource DarkBlueBrush1}"
+                           Foreground="{StaticResource PrimaryBlueBrush}"
                            Background="Transparent"
                            BorderBrush="Transparent"
                            BorderThickness="1"

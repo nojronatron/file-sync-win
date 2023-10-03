@@ -8,11 +8,10 @@ namespace FileSyncDesktop.ViewModels
 {
     public class MainWindowViewModel : Conductor<object>
     {
-        private static readonly string _defaultServerAddress = "localhost";
-        private static readonly string _defaultServerPort = "5000";
-        private static readonly string _defaultFilepathArgument = @"C:\Users\Public\Documents\";
-        private static readonly string _defaultFilterArgument = "*.mime";
-
+        private static readonly string _defaultServerAddress = string.Empty;
+        private static readonly string _defaultServerPort = string.Empty;
+        private static readonly string _defaultFilepathArgument = string.Empty;
+        private static readonly string _defaultFilterArgument = string.Empty;
         private readonly IFileWatcherSettings _fileWatcherSettings;
         private readonly IRmzLogger _logger;
 
@@ -34,6 +33,7 @@ namespace FileSyncDesktop.ViewModels
             {
                 _fileSourcePath = value;
                 NotifyOfPropertyChange(() => FileSourcePath);
+                NotifyOfPropertyChange(() => CanSetConfiguration);
             }
         }
 
@@ -45,6 +45,7 @@ namespace FileSyncDesktop.ViewModels
             {
                 _filterArgument = value;
                 NotifyOfPropertyChange(() => FilterArgument);
+                NotifyOfPropertyChange(() => CanSetConfiguration);
             }
         }
 
@@ -56,6 +57,7 @@ namespace FileSyncDesktop.ViewModels
             {
                 _serverAddress = value;
                 NotifyOfPropertyChange(() => ServerAddress);
+                NotifyOfPropertyChange(() => CanSetConfiguration);
             }
         }
 
@@ -70,6 +72,7 @@ namespace FileSyncDesktop.ViewModels
             {
                 _serverPort = value;
                 NotifyOfPropertyChange(() => ServerPort);
+                NotifyOfPropertyChange(() => CanSetConfiguration);
             }
         }
 
@@ -98,7 +101,10 @@ namespace FileSyncDesktop.ViewModels
         {
             get
             {
-                return true;
+                return string.IsNullOrEmpty(ServerPort) &&
+                    string.IsNullOrEmpty(ServerAddress) &&
+                    string.IsNullOrEmpty(FilterArgument) &&
+                    string.IsNullOrEmpty(FileSourcePath);
             }
         }
 
@@ -106,15 +112,10 @@ namespace FileSyncDesktop.ViewModels
         {
             get
             {
-                if (_fileWatcherSettings.FileSourcePathIsValid(FileSourcePath) &&
-                    _fileWatcherSettings.FilterArgumentMatchesPattern(FilterArgument) &&
-                    _fileWatcherSettings.ServerPortInValidRange(ServerPort)
-                    )
-                {
-                    return true;
-                }
-
-                return false;
+                return !string.IsNullOrEmpty(FileSourcePath) &&
+                       !string.IsNullOrEmpty(FilterArgument) &&
+                       !string.IsNullOrEmpty(ServerAddress) &&
+                       !string.IsNullOrEmpty(ServerPort);
             }
         }
 
@@ -128,8 +129,11 @@ namespace FileSyncDesktop.ViewModels
             FileSourcePath = string.Empty;
             FilterArgument = string.Empty;
             ServerAddress = string.Empty;
-            ServerPort = _defaultServerPort;
+            ServerPort = string.Empty;
             NotifyConfigChanged();
+            NotifyOfPropertyChange(() => CanOpenFileMonitor);
+            NotifyOfPropertyChange(() => CanLoadConfiguration);
+            NotifyOfPropertyChange(() => CanSetConfiguration);
             _logger.Flush();
         }
 
@@ -138,12 +142,14 @@ namespace FileSyncDesktop.ViewModels
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Called. Getting config settings from Environment Variables.");
+
             if (_fileWatcherSettings.GetSettingsFromEnvVars())
             {
                 FileSourcePath = _fileWatcherSettings.FilePath;
                 FilterArgument = _fileWatcherSettings.FileType;
                 ServerAddress = _fileWatcherSettings.ServerAddress;
                 ServerPort = _fileWatcherSettings.ServerPort;
+                NotifyConfigChanged();
                 LogCurrentConfig(methodName);
             }
             else
@@ -163,10 +169,14 @@ namespace FileSyncDesktop.ViewModels
                 _logger.Data(methodName, "Using arguments in form to set FileWatcher Configuration.");
                 _fileWatcherSettings.SetFileSettings(FileSourcePath, FilterArgument);
                 _fileWatcherSettings.SetServerSettings(ServerAddress, ServerPort);
+                NotifyOfPropertyChange(() => CanOpenFileMonitor);
+                NotifyOfPropertyChange(() => CanLoadConfiguration);
                 LogCurrentConfig(methodName);
             }
             else
             {
+                NotifyOfPropertyChange(() => CanOpenFileMonitor);
+                NotifyOfPropertyChange(() => CanLoadConfiguration);
                 _logger.Data(methodName, "Settings not valid, returning to Main View window.");
             }
 
@@ -183,7 +193,7 @@ namespace FileSyncDesktop.ViewModels
             _logger.Data(methodName, ServerPort.ToString());
         }
 
-        public bool CanStartFileMonitor
+        public bool CanOpenFileMonitor
         {
             get
             {
@@ -196,7 +206,7 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
-        public void StartFileMonitor()
+        public void OpenFileMonitor()
         {
             string methodName = MethodBase.GetCurrentMethod().Name;
             _logger.Data(methodName, "Called.");

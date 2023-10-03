@@ -7,6 +7,9 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="\Styles\UIColors.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="\Styles\RoundButtons.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="\Styles\PillShapeStyles.xaml"></ResourceDictionary>
                 <ResourceDictionary>
                     <local:Bootstrapper x:Key="Bootstrapper" />
                 </ResourceDictionary>

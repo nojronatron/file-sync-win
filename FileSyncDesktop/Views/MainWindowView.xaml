@@ -5,63 +5,179 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSyncDesktop.Views"
         mc:Ignorable="d"
-        Title="MainWindowView" Width="800" Height="500"
-        >
+        Width="800" Height="500" 
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+    >
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch" BorderBrush="Black" HorizontalContentAlignment="Left">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Exit" x:Name="MenuFileExit" />
-            </MenuItem>
-            <Separator Width="10" />
-            <MenuItem Header="_About" x:Name="MenuAbout" />
-        </Menu>
-        <StatusBar DockPanel.Dock="Bottom" Background="Beige">
-            <StatusBarItem>
-                <TextBlock x:Name="statusBarText" Text="Ready" TextAlignment="Center" Height="20" />
-            </StatusBarItem>
-        </StatusBar>
-        <Grid DockPanel.Dock="Left" Background="Azure">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="12" />
-                <ColumnDefinition Width="100*" />
-                <ColumnDefinition Width="12" />
-                <ColumnDefinition Width="200*" />
-                <ColumnDefinition Width="12" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="275*" />
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Column="1" Grid.Row="1" MinWidth="250">
-                <DockPanel>
-                    <Label Content="Configuration" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+    <!-- set default visual state groups -->
+    <Border>
+
+        <Border.Background>
+            <ImageBrush ImageSource="\Images\bf-back-image.jpg" 
+                        Stretch="Uniform" />
+        </Border.Background>
+
+        <!-- window definition including border, grid, and panels -->
+        <Border CornerRadius="20" 
+                BorderThickness="4" 
+                Opacity=".92">
+            <Border.BorderBrush>
+                <LinearGradientBrush  StartPoint="1,1" EndPoint="0,0">
+                    <GradientStop Color="{StaticResource PrimaryDarkBlueColor}" Offset="0.0"/>
+                    <GradientStop Color="{StaticResource PrimaryLightBlueColor}" Offset="0.5"/>
+                    <GradientStop Color="{StaticResource PrimaryBlueColor}" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0.5">
+                    <GradientStop Color="{StaticResource PrimaryGrayColor}" Offset="0.5"/>
+                    <GradientStop Color="{StaticResource PrimaryLightGrayColor}" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+
+                <!-- topline menu controls -->
+                <DockPanel Grid.Column="1" 
+                           Grid.Row="0" 
+                           Grid.ColumnSpan="4" 
+                           HorizontalAlignment="Center">
+                    <TextBlock FontSize="18" 
+                               FontFamily="Ariel" 
+                               FontWeight="Bold">Bib-Sync-Tool</TextBlock>
                 </DockPanel>
-                <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="Folder Path" />
-                    <TextBox x:Name="FileSourcePath" VerticalAlignment="Center" Background="White" ToolTip="Example: C:\RMS Express\N0NE\Messages" />
+                <DockPanel Grid.Column="3" 
+                           Grid.Row="0" 
+                           Grid.ColumnSpan="2" 
+                           HorizontalAlignment="Right">
+                    <Button Template="{StaticResource roundHelpButton}"
+                            x:Name="HelpAbout"  
+                            ToolTip="Information"                          
+                            Height="20" Width="20" />
+                    <Button Template="{StaticResource roundMinimizeButton}"
+                            x:Name="MinimizeWindow" 
+                            ToolTip="Minimize This App Window" 
+                            Height="20" Width="20" />
+                    <Button Template="{StaticResource roundCloseButton}"
+                            x:Name="CloseApp" 
+                            ToolTip="Close Window"
+                            Height="20" Width="20" />
                 </DockPanel>
-                <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="File Extension" />
-                    <TextBox x:Name="FilterArgument" VerticalAlignment="Center" Background="White" ToolTip="Example: *.mime" />
-                </DockPanel>
-                <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="Server" />
-                    <TextBox x:Name="ServerAddress" VerticalAlignment="Center" Background="White" ToolTip="localhost or an IPv4 address" />
-                </DockPanel>
-                <DockPanel VerticalAlignment="Stretch">
-                    <Label Content="Server Port" />
-                    <TextBox x:Name="ServerPort" VerticalAlignment="Center" Background="White" ToolTip="Example: 7001" />
-                </DockPanel>
-                <StackPanel>
-                    <Button x:Name="ClearConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Clear server and file configuration settings.">Clear</Button>
-                    <Button x:Name="LoadConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Load file and server configuration settings from FSW_ environment variables.">Load</Button>
-                    <Button x:Name="SetConfiguration" VerticalAlignment="Center" Width="130" ToolTip="Set the manually entered form settings.">Set</Button>
-                    <Button x:Name="OpenFileMonitor" VerticalAlignment="Center" Width="130" ToolTip="Open file monitor with the displayed settings.">Open</Button>
+
+                <!-- middle content and interaction area -->
+                <StackPanel Grid.Column="1" 
+                            Grid.Row="1" 
+                            HorizontalAlignment="Left">
+                    <DockPanel>
+                        <Label Style="{StaticResource HeaderLabelPillStyle}"
+                               Content="Configuration" 
+                               HorizontalAlignment="Stretch" 
+/>
+                    </DockPanel>
+                    <DockPanel VerticalAlignment="Stretch">
+                        <Label Style="{StaticResource InputFormLabels}"
+                               Content="Path"/>
+                        <TextBox x:Name="FileSourcePath" 
+                                 Style="{StaticResource InputFormTextBoxes}"
+                                 ToolTip="Example: C:\RMS Express\N0NE\Messages">
+                        </TextBox>
+                    </DockPanel>
+                    <DockPanel VerticalAlignment="Stretch">
+                        <Label Style="{StaticResource InputFormLabels}"
+                               Content="Filter" />
+                        <TextBox x:Name="FilterArgument" 
+                            Style="{StaticResource InputFormTextBoxes}"
+                            ToolTip="Example: *.mime" />
+                    </DockPanel>
+                    <DockPanel VerticalAlignment="Stretch">
+                        <Label Style="{StaticResource InputFormLabels}"
+                               Content="Server" />
+                        <TextBox x:Name="ServerAddress" 
+                            Style="{StaticResource InputFormTextBoxes}"
+                            ToolTip="localhost or an IPv4 address" />
+                    </DockPanel>
+                    <DockPanel VerticalAlignment="Stretch">
+                        <Label Style="{StaticResource InputFormLabels}"
+                               Content="Server Port" />
+                        <TextBox x:Name="ServerPort" 
+                            Style="{StaticResource InputFormTextBoxes}"
+                            ToolTip="Example: 5000" />
+                    </DockPanel>
                 </StackPanel>
-            </StackPanel>
-            
-            <!-- File monitor status and controls view -->
-            <ContentControl Grid.Column="3" Grid.Row="1" MinWidth="252" x:Name="ActiveItem" />
-        </Grid>
-    </DockPanel>
+
+                <WrapPanel Grid.Column="1"
+                           Grid.Row="2"
+                           HorizontalAlignment="Left">
+                    <Button x:Name="LoadConfiguration"
+                            Style="{StaticResource LoadButtonPillStyle}"
+                            ToolTip="Load file and server configuration settings from FSW_ environment variables."
+                            Content="Load" 
+                            />
+                    <Button x:Name="SetConfiguration" 
+                            Style="{StaticResource LoadButtonPillStyle}"
+                            ToolTip="Set the manually entered form settings."
+                            Content="Set" 
+                            />
+                    <Button x:Name="ClearConfiguration"
+                            Style="{StaticResource ClearButtonPillStyle}"
+                            ToolTip="Clear the configuration entries."
+                            Content="Clear" 
+                            />
+                    <Button x:Name="OpenFileMonitor" 
+                            Style="{StaticResource StartButtonPillStyle}"
+                            ToolTip="Open file monitor with the displayed settings."
+                            Content="Open File Monitor" 
+                            />
+                </WrapPanel>
+
+                <StackPanel Grid.Row="1" 
+                            Grid.Column="3"
+                            Grid.RowSpan="2">
+                    <!-- File monitor status and controls view -->
+                    <ContentControl x:Name="ActiveItem" 
+                                    Grid.Column="3" 
+                                    Grid.Row="1" 
+                                    MinWidth="252" />
+                </StackPanel>
+
+                <!-- bottom status message area -->
+                <DockPanel Grid.Row="3"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            HorizontalAlignment="Left">
+                    <Label x:Name="StatusLabel"
+                           FontSize="12"
+                           FontFamily="Verdana"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource PrimaryBlueColorBrush}"
+                           Background="{StaticResource SecondaryWhiteColorBrush}"
+                           BorderBrush="Transparent"
+                           BorderThickness="1"
+                           Width="700"
+                           Padding="0" Margin="0"
+                           Content="~~~~~~~~~~~~~~~~~~~~~~~~">
+                    </Label>
+                </DockPanel>
+            </Grid>
+        </Border>
+    </Border>
 </Window>

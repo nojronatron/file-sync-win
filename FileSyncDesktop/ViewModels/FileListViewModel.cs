@@ -40,6 +40,28 @@ namespace FileSyncDesktop.ViewModels
             }
         }
 
+        private string _serverAddress;
+        public string ServerAddress
+        {
+            get { return _serverAddress; }
+            set
+            {
+                _serverAddress = value;
+                NotifyOfPropertyChange(() => ServerAddress);
+            }
+        }
+
+        private string _serverPort;
+        public string ServerPort
+        {
+            get { return _serverPort; }
+            set
+            {
+                _serverPort = value;
+                NotifyOfPropertyChange(() => ServerPort);
+            }
+        }
+
         private bool _fsWatcherIsRunning;
         public bool FsWatcherIsRunning
         {
@@ -115,18 +137,22 @@ namespace FileSyncDesktop.ViewModels
 
         private bool HasServerSettings()
         {
+            bool result = false;
+
             string methodName = MethodBase.GetCurrentMethod().Name;
 
             if (_fileWatcherSettings.ServerAddress != string.Empty && _fileWatcherSettings.ServerPort != string.Empty)
             {
                 _logger.Data(methodName, "Server address and port variables are set.");
-                return true;
+                result = true;
             }
             else
             {
                 _logger.Data(methodName, "Server address and/or port variables are NOT set.");
-                return false;
             }
+
+            _logger.Flush();
+            return result;
         }
 
         private bool HasFilePathFilterSettings()

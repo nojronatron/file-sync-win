@@ -9,7 +9,7 @@
 
         bool FileSourcePathIsValid(string value);
         bool FilterArgumentMatchesPattern(string value);
-        void GetSettingsFromEnvVars();
+        bool GetSettingsFromEnvVars();
         bool HasFileSettings();
         bool HasServerSettings();
         void RemoveFileSettings();

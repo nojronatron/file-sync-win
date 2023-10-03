@@ -4,28 +4,56 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FileSyncDesktop.Views"
-             mc:Ignorable="d" Background="Azure"
+             mc:Ignorable="d"
              >
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6" />
-            <ColumnDefinition Width="400*" />
-            <ColumnDefinition Width="6" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="230" />
-            <RowDefinition Height="6" />
-            <RowDefinition Height="36" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch">
-            <Label Content="Files Detected" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
-            <TextBox x:Name="FileListText" Text="" Height="200" Width="400" 
-                     VerticalAlignment="Top" Background="White" />
-        </StackPanel>
-        <DockPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center">
-            <Button x:Name="StartFSWatcher" Margin="6" VerticalAlignment="Center" Width="130" ToolTip="Starts monitoring the file system for changes.">Start Monitoring Files</Button>
-            <Button x:Name="StopFSWatcher" Margin="6" VerticalAlignment="Center" Width="130" ToolTip="Stops monitoring the file system for changes.">Stop Monitoring Files</Button>
-        </DockPanel>
 
-    </Grid>
+    <Border BorderThickness="3">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                <GradientStop Color="{StaticResource PrimaryLightGrayColor}" 
+                              Offset="1.0" />
+                <GradientStop Color="{StaticResource PrimaryGrayColor}" 
+                              Offset="0.0" />
+            </LinearGradientBrush>
+        </Border.Background>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="6" />
+                <ColumnDefinition Width="400*" />
+                <ColumnDefinition Width="6" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="230*" />
+                <RowDefinition Height="6" />
+                <RowDefinition Height="36" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Column="1" 
+                        Grid.Row="0" 
+                        VerticalAlignment="Stretch">
+                <Label Content="Files Detected" 
+                       HorizontalAlignment="Stretch" 
+                       HorizontalContentAlignment="Center"
+                       FontSize="16"
+                       FontWeight="Bold" />
+                <TextBox x:Name="FileListText" 
+                         Text=""
+                         Height="350"
+                         Width="400" 
+                         VerticalAlignment="Top" 
+                         Background="{StaticResource PrimaryWhiteColorBrush}" />
+            </StackPanel>
+            <DockPanel Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center">
+                <Button x:Name="StartFSWatcher" 
+                        Style="{StaticResource StartStopFSWatcherButtons}"
+                        ToolTip="Starts monitoring the file system for changes."
+                        Content="Start Monitoring Files" />
+                <Button x:Name="StopFSWatcher"
+                        Style="{StaticResource StartStopFSWatcherButtons}"
+                        ToolTip="Stops monitoring the file system for changes."
+                        Content="Stop Monitoring Files" />
+            </DockPanel>
+
+        </Grid>
+
+    </Border>
 </UserControl>

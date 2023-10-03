@@ -83,7 +83,6 @@ namespace FileSyncDesktop.Library.Helpers
 
         public bool HasServerSettings()
         {
-            // todo: check for valid server address if not null or empty
             return ServerPortInValidRange(ServerPort) && !string.IsNullOrEmpty(ServerAddress);
         }
 

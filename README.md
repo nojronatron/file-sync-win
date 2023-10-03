@@ -9,40 +9,46 @@ This is an exploratory project using WPF and ASP.NET.
 Goals:
 
 - Create a tool that can be used to synchronize message data between a Winlink Express instance and another computer.
-- A 'Server' service that listens for listing of bib reports, recording them to a log file.
-- A 'Client' portion that watches a directory and, whenever a new file is created, parses the content, logs the bib data, and sends it to the Server service.
+- Project will be a MVP (Minimum Viable Product) for demonstration purposes.
 
 When this project is ready, a presentation will be made to the interested parties for feedback and to start planning for potential use.
 
+## Primary Components
+
+- A 'Server' service that listens for listing of bib reports, recording them to a log file.
+- A 'Client' portion that watches a directory and, whenever a new file is created, parses the content, logs the bib data, and sends it to the Server service.
+
 ## Project Status
 
-- Core functionality is working.
-- Additional UI tweaks are in the works for MVP release.
-- In the short term, publish a proof of concept and basic functionality (MVP) for demonstration purposes to potential end-users.
-- Distribution: Limited. ClickOnce publishing of the client application and the server service.
-- Mid term: Develop a solution based on this MVP concept that incorporates new and/or updated features based on feedback, and a better designed repository and project for the longer-term.
-- Before end of May 2024: Publish a well tested client app and server service with a minimum set of features ready for BigFoot 2024.
+- Client component is a stand-alone desktop executable.
+- Client UI leverages WPF (Windows Presentation Foundation) for a responsive user interface.
+- Client can track a specified folder for files of the defined type (the default type is '.mime').
+- Server component is a stand-alone web service.
+- Build and Distribution: Limited. Utilizes ClickOnce publishing of the client application and the server service as separate executables.
 
 ## Usage and Behavior
 
 ### Simple Usage Walkthrough
 
-1. Download the Published App (ClickOnce Published folder -- TBD) to a directory on the computer that has Winlink Express installed (Client).
-1. Run the installer (setup.exe) from the ClickOnce Publish folder (TBD).
+1. Download the Published Application to a directory on the computer that has Winlink Express installed (Client).
+1. Run the installer (setup.exe) from the ClickOnce Published folder.
 1. Find the directory where Winlink Express stores its message files and copy the path.
-1. Run the Executable and enter that message path into the Sync Tool UI.
-1. A separate folder will have the service executable 'FileSyncAPI.exe' along with some DLL files. Run to host the Server component.
-1. Back in the Sync Tool UI, enter the Server's IP address. The Default port number should be fine.
-1. Click 'Set' to open the File Monitor Window. Click 'Start' to start monitoring for files; 'Stop' to stop it.
-1. Server: When the bib data is received, it will be logged to a file in the same directory as 'FileSyncAPI.exe', as well as to a console window.
+1. Run the Executable and enter that message path and file extension into the Sync Tool UI.
+1. Run the service executable 'FileSyncAPI.exe' to host the Server component. Look at the FileSyncAPI console window to confirm the Server Address and Port number.
+1. Back in the Sync Tool UI, enter the Server Address and Port number, and then click the SET button.
+1. Click the OPEN FILE MONITOR button to open the File Monitor Window.
+1. Click START MONITORING FILES to start monitoring for files; Click STOP MONITORING FILES to stop.
+1. Client: When bib data is detected in a file, it will be logged to a file in the same directory as the executable, in tab-delimited format.
+1. Server: When the bib data is received, it will be logged to a file in the same directory as 'FileSyncAPI.exe' as well as to a console window.
 
 ### Other Behavior Expectations
 
 - Only newly created files in the configured path will be detected and processed.
 - Newly created files that do not contain bib data will NOT be processed in any way.
-- The _Server address and port configuration_ is completely optional.
-- The Client will still function without them but will only record data to the local log file.
-- The Server service can run stand-alone without the Client, but it will only receive data from a Client.
+- The _Server address and port configuration_ must be entered into the 'Configuration' screen on the client but if the server doesn't respond, the client will continue to monitor files and record data to the log file.
+- The Server service can run stand-alone without the Client, but it will only receive data from a Client (will not monitor for changed files).
+- Even though it is possible to run multiple instances of the Client, only one instance of the Server can be run at a time.
+- The Server will only accept data from the Client if the Client is configured with the correct Server Address and Port number.
 
 ### Security and Data Privacy
 
@@ -56,11 +62,11 @@ When this project is ready, a presentation will be made to the interested partie
 
 Open Windows Firewall Advanced Settings and create 2 new rules, one for TCP, and one for UDP, in the Public profile (or All Profiles):
 
-- TCP: Allow inbound traffic on port 5000.
-- UDP: Allow inbound traffic on port 5001.
+- TCP: Allow inbound traffic on SERVER PORT.
+- UDP: Allow inbound traffic on SERVER PORT.
 - Program: `FileSyncAPI.exe`
 
-To help you diagnose connection issues, turn on Advanced Logging for the Windows Firewall to capture both types of actions: `Allow` and `Block`.
+To help you diagnose connection issues, turn on Advanced Logging for the Windows Firewall to capture both types of actions: `Allow` and `Block`. Review the log after running the Client and Server to see if any traffic is being blocked.
 
 ## Project Structure
 
@@ -69,9 +75,9 @@ To help you diagnose connection issues, turn on Advanced Logging for the Windows
 - Web server for receiving and processing data from one or more clients.
 - Data processing to validate the data and format it for storage.
 - Data storage component for saving to a log file, and potentially a database.
-- SwaggerUI is included for testing the API in Debug mode. available at `server-address:port/swagger/index.html`
+- SwaggerUI is included for testing the API in Debug mode, and can be accessed at `server-address:port/swagger/index.html`
 - See [JSON Body Format](#json-body-format) below.
-- Currently, no user interface is planned.
+- Currently, no user interface is planned for MVP.
 
 ### Client Side
 
@@ -87,11 +93,9 @@ To help you diagnose connection issues, turn on Advanced Logging for the Windows
 Log files are stored in the same directory as the executable:
 
 - Development: `bin\Debug'
-- Deployment/Installation: Whatever directory each EXE is installed to.
+- Deployment or desktop installation: Whatever directory each EXE is installed to.
 
-## Requirements
-
-### Run
+## Requirements to Run
 
 - Windows 7 or later
 - Dot NET Framework 4.x Runtimes
@@ -177,14 +181,15 @@ Since this is a multi-project solution, the Startup configuration must be done i
 
 ### Environment Variables
 
-This feature will no longer be supported in the MVP.
+This feature will be supported in the MVP and, depending on feedback, may be retained in the final product.
 
 ```powershell
 > dir env:
 ...
 FSW_FILEPATH                   D:\filemon\messages
 FSW_FILETYPE                   *.mime
-FSW_SERVERADDR                 "localhost:6001"
+FSW_SERVERADDR                 "localhost"
+FSW_SERVERPORT                 5001
 ...
 ```
 
@@ -203,3 +208,7 @@ FSW_SERVERADDR                 "localhost:6001"
 - Dot NET Framework 4.7 for Desktop UI support back to Windows 7.
 - ASP.NET Core 6 Web API for receiving and properly handling REST POST request payloads.
 - Collections used for in-memory storage while app is running.
+
+## Known Issues
+
+Although the Client UI will allow you to change the Server Address and Port number, it will not be able to connect to the Server if the File Monitoring process is already running, or has run and then was stopped. The workaround is to restart the Client application.

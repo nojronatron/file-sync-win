@@ -144,7 +144,6 @@ See SwaggerUI in Debug mode for an interactive Schema and example.
 
 ### Dependencies
 
-- Autofac v7.1.0.0
 - Caliburn.Micro v3.2.0
 - Swashbuckle.AspNetCore (Swagger) v6.5.0
 - Newtonsoft.Json v13.0.0.0

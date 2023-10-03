@@ -133,7 +133,7 @@
                             Content="Load" 
                             />
                     <Button x:Name="SetConfiguration" 
-                            Style="{StaticResource SetButtonPillStyle}"
+                            Style="{StaticResource LoadButtonPillStyle}"
                             ToolTip="Set the manually entered form settings."
                             Content="Set" 
                             />
@@ -145,7 +145,7 @@
                     <Button x:Name="OpenFileMonitor" 
                             Style="{StaticResource StartButtonPillStyle}"
                             ToolTip="Open file monitor with the displayed settings."
-                            Content="Start Monitoring" 
+                            Content="Open File Monitor" 
                             />
                 </WrapPanel>
 
@@ -168,13 +168,14 @@
                            FontSize="12"
                            FontFamily="Verdana"
                            FontWeight="Bold"
-                           Foreground="{StaticResource PrimaryBlueBrush}"
-                           Background="Transparent"
+                           Foreground="{StaticResource PrimaryBlueColorBrush}"
+                           Background="{StaticResource SecondaryWhiteColorBrush}"
                            BorderBrush="Transparent"
                            BorderThickness="1"
                            Width="700"
                            Padding="0" Margin="0"
-                           Content="~~~~~~~~~~~~~~~~~~~~~~~~" />
+                           Content="~~~~~~~~~~~~~~~~~~~~~~~~">
+                    </Label>
                 </DockPanel>
             </Grid>
         </Border>

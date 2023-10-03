@@ -1,64 +1,64 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Background Colors -->
-    <Color x:Key="PrimaryBackColor">FloralWhite</Color>
-    <Color x:Key="ButtonBackColor">Gainsboro</Color>
-    <Color x:Key="AllWhiteBackColor">White</Color>
-    <Color x:Key="PrimaryTitleHeaderColor">MediumBlue</Color>
-    <Color x:Key="DarkGrayBackColor">DimGray</Color>
+    <!-- accessible colors based on Bang Wong palette for varying colorblind types -->
+    <!-- source: https://davidmathlogic.com/colorblind/#%23000000-%23E69F00-%2356B4E9-%23009E73-%23F0E442-%230072B2-%23D55E00-%23CC79A7 -->
+    <!-- source: https://www.nature.com/articles/nmeth.1618 -->
+    <!-- source: Bang Wong, Creative Director of Broad Institute of MIT and Harvard and adjunct assistant professor in Dept of Arts as Applied to Medicine at The Johns Hopkins University School of Medicine -->
+
+    <!-- Accessible Colors -->
+    <Color x:Key="PrimaryBlackColor">Black</Color>
+    <Color x:Key="PrimaryOrangeColor">#ffe69f00</Color>
+    <Color x:Key="PrimaryBlueColor">#ff0000ff</Color>
+    <Color x:Key="PrimaryGreenColor">#ff009e73</Color>
+    <Color x:Key="PrimaryRedColor">#ffd55e00</Color>
+    <Color x:Key="PrimaryYellowColor">#fff0e442</Color>
+    <Color x:Key="PrimaryDarkBlueColor">#ff0072b2</Color>
+    <Color x:Key="PrimaryLightBlueColor">#ff56b4e9</Color>
+    <Color x:Key="PrimaryMagentaColor">#ffcc79a7</Color>
+    <Color x:Key="PrimaryWhiteColor">#ffffffff</Color>
+    <Color x:Key="PrimaryGrayColor">#ff808080</Color>
+    <Color x:Key="PrimaryLightGrayColor">#FFD3D3D3</Color>
+
+    <!-- semi-transparent accessible colors -->
+    <Color x:Key="SecondaryBlackColor">#88000000</Color>
+    <Color x:Key="SecondaryOrangeColor">#88e69f00</Color>
+    <Color x:Key="SecondaryBlueColor">#880000ff</Color>
+    <Color x:Key="SecondaryGreenColor">#88009e73</Color>
+    <Color x:Key="SecondaryRedColor">#88d55e00</Color>
+    <Color x:Key="SecondaryYellowColor">#88f0e442</Color>
+    <Color x:Key="SecondaryDarkBlueColor">#880072b2</Color>
+    <Color x:Key="SecondaryLightBlueColor">#8856b4e9</Color>
+    <Color x:Key="SecondaryMagentaColor">#88cc79a7</Color>
+    <Color x:Key="SecondaryWhiteColor">#88ffffff</Color>
+    <Color x:Key="SecondaryGrayColor">#88808080</Color>
+
+    <!-- Accessible ColorBrushes -->
+    <SolidColorBrush x:Key="PrimaryBlackColorBrush">Black</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryOrangeColorBrush">#ffe69f00</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryBlueColorBrush">#ff0000ff</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryGreenColorBrush">#ff009e73</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryRedColorBrush">#ffd55e00</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryYellowColorBrush">#fff0e442</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryDarkBlueColorBrush">#ff0072b2</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryLightBlueColorBrush">#ff56b4e9</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryMagentaColorBrush">#ffcc79a7</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryWhiteColorBrush">#ffffffff</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryGrayColorBrush">#ff808080</SolidColorBrush>
+    <SolidColorBrush x:Key="PrimaryLightGrayColorBrush">#ffd3d3d3</SolidColorBrush>
     
-    <!-- Window Border Colors -->
-    <Color x:Key="PrimaryBorderColor">Black</Color>
-    <Color x:Key="SecondaryBorderColor">MidnightBlue</Color>
-    <Color x:Key="FadeBorderColorMiddle">MediumBlue</Color>
-    <Color x:Key="FadeBorderColorEnd">DodgerBlue</Color>
-
-    <!-- Color Palette -->
-    <Color x:Key="DarkBlueColor">DarkBlue</Color>
-    <Color x:Key="DeepSkyBlueColor">DeepSkyBlue</Color>
-    <Color x:Key="LightSkyBlueColor">LightSkyBlue</Color>
-    <Color x:Key="OrangeColor">Orange</Color>
-    <Color x:Key="DarkOrangeColor">DarkOrange</Color>
-    <Color x:Key="DarkerOrangeColor">SaddleBrown</Color>
-    <Color x:Key="GreenColor">Green</Color>
-
-    <!-- SolidColorBrush Palette -->
-    <SolidColorBrush x:Key="PrimaryWhiteBrush">White</SolidColorBrush>
-    <SolidColorBrush x:Key="OffWhiteBrush">Gainsboro</SolidColorBrush>
-    <SolidColorBrush x:Key="DefaultWhiteBrush">FloralWhite</SolidColorBrush>
-    <SolidColorBrush x:Key="PrimaryBlackBrush">Black</SolidColorBrush>
-    <SolidColorBrush x:Key="PrimaryBlueBrush">Blue</SolidColorBrush>
-    <SolidColorBrush x:Key="DarkBlueBrush1">DarkBlue</SolidColorBrush>
-    <SolidColorBrush x:Key="DarkBlueBrush2">MidnightBlue</SolidColorBrush>
-    <SolidColorBrush x:Key="MidBlueBrush">DodgerBlue</SolidColorBrush>
-    <SolidColorBrush x:Key="LightBlueBrush1">DeepSkyBlue</SolidColorBrush>
-    <SolidColorBrush x:Key="LighterBlueBrush">LightSkyBlue</SolidColorBrush>
-    <SolidColorBrush x:Key="PrimaryOrangeBrush">Orange</SolidColorBrush>
-    <SolidColorBrush x:Key="PrimaryGreenBrush">MediumSeaGreen</SolidColorBrush>
-    <SolidColorBrush x:Key="DarkerOrangeBrush">SaddleBrown</SolidColorBrush>
-
-    <!-- Font Colors -->
-    <SolidColorBrush x:Key="MessageHeaderTextColor">Blue</SolidColorBrush>
-    <SolidColorBrush x:Key="ReadonlyTextColor">DimGray</SolidColorBrush>
-
-    <!-- Panel Colors -->
-
-    <!-- Button Colors -->
-    <SolidColorBrush x:Key="SubmitButtonFontColor">Black</SolidColorBrush>
-    <SolidColorBrush x:Key="SubmitButtonBackgroundColor">LightSkyBlue</SolidColorBrush>
-    <SolidColorBrush x:Key="ClearButtonBackgroundColor">Orange</SolidColorBrush>
-    <Color x:Key="ControlMouseOverColor">MediumSeaGreen</Color>
-    <Color x:Key="ControlPressedColor">LightSkyBlue</Color>
-    <Color x:Key="PressedBorderDarkColor">Blue</Color>
-    <Color x:Key="PressedBorderLightColor">DeepSkyBlue</Color>
-    <Color x:Key="DisabledControlDarkColor">DimGray</Color>
-    <Color x:Key="DisabledForegroundColor">SlateGray</Color>
-    <Color x:Key="DisabledBorderDarkColor">DarkSlateGray</Color>
-
-    <!-- Other Colors -->
-    <SolidColorBrush x:Key="BoxShadowColor">White</SolidColorBrush>
-    <SolidColorBrush x:Key="TextBoxBorder">Black</SolidColorBrush>
-    <SolidColorBrush x:Key="TextAreaOutline">Orange</SolidColorBrush>
+    <!-- semi-transparent accessible colorbrushes -->
+    <SolidColorBrush x:Key="SecondaryBlackColorBrush">#88000000</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryOrangeColorBrush">#88e69f00</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryBlueColorBrush">#880000ff</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryGreenColorBrush">#88009e73</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryRedColorBrush">#88d55e00</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryYellowColorBrush">#88f0e442</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryDarkBlueColorBrush">#880072b2</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryLightBlueColorBrush">#8856b4e9</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryMagentaColorBrush">#88cc79a7</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryWhiteColorBrush">#88ffffff</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryGrayColorBrush">#88808080</SolidColorBrush>
+    <SolidColorBrush x:Key="SecondaryLightGrayColorBrush">#88d3d3d3</SolidColorBrush>
 
 </ResourceDictionary>

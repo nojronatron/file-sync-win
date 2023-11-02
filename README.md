@@ -30,25 +30,26 @@ When this project is ready, a presentation will be made to the interested partie
 
 ### Simple Usage Walkthrough
 
-1. Download the Published Application to a directory on the computer that has Winlink Express installed (Client).
-1. Run the installer (setup.exe) from the ClickOnce Published folder.
-1. Find the directory where Winlink Express stores its message files and copy the path.
-1. Run the Executable and enter that message path and file extension into the Sync Tool UI.
-1. Run the service executable 'FileSyncAPI.exe' to host the Server component. Look at the FileSyncAPI console window to confirm the Server Address and Port number.
-1. Back in the Sync Tool UI, enter the Server Address and Port number, and then click the SET button.
+This walkthrough is for a single-computer scenario.
+
+1. Launch FileSyncApi.exe to host the Server component.
+1. Look at the FileSyncApi console window to discover the Server Address and Port number.
+1. Launch FileSyncDesktop.exe and enter the message path, file extension, server name (or address), and server port, and then click the SET button.
 1. Click the OPEN FILE MONITOR button to open the File Monitor Window.
-1. Click START MONITORING FILES to start monitoring for files; Click STOP MONITORING FILES to stop.
-1. Client: When bib data is detected in a file, it will be logged to a file in the same directory as the executable, in tab-delimited format.
-1. Server: When the bib data is received, it will be logged to a file in the same directory as 'FileSyncAPI.exe' as well as to a console window.
+1. Click START MONITORING FILES to start monitoring for new files.
+1. When a new file is created, FileSyncDesktop will list the filename.
+1. When a new file contains "bib data", FileSyncDesktop will log that data and simultaneously send it to the configured server address and port.
+1. When FileSyncApi Server receives data from the client it logs the data to the console window and to a file in the same directory as FileSyncApi.exe.
+
+The FileSyncApi log file can be be accessed with a safe file-handle program like Notepad++ or UltraEdit for analysing the data.
 
 ### Other Behavior Expectations
 
 - Only newly created files in the configured path will be detected and processed.
 - Newly created files that do not contain bib data will NOT be processed in any way.
 - The _Server address and port configuration_ must be entered into the 'Configuration' screen on the client but if the server doesn't respond, the client will continue to monitor files and record data to the log file.
-- The Server service can run stand-alone without the Client, but it will only receive data from a Client (will not monitor for changed files).
-- Even though it is possible to run multiple instances of the Client, only one instance of the Server can be run at a time.
-- The Server will only accept data from the Client if the Client is configured with the correct Server Address and Port number.
+- The Server service can run stand-alone without the Client, waiting to receive data only from client(s) configured to use it.
+- Even though it is possible to run multiple instances of the Client only one instance of the Server should be run at a time.
 
 ### Security and Data Privacy
 
@@ -58,15 +59,20 @@ When this project is ready, a presentation will be made to the interested partie
 - This application does NOT use encryption, and only the HTTP endpoint is available on the web service.
 - To allow host-to-host communications, you will need to open TCP and UDP ports on your server computer's firewall.
 
-#### Firewall TCP and UDP Ports
+### Firewall TCP and UDP Ports
 
 Open Windows Firewall Advanced Settings and create 2 new rules, one for TCP, and one for UDP, in the Public profile (or All Profiles):
 
-- TCP: Allow inbound traffic on SERVER PORT.
-- UDP: Allow inbound traffic on SERVER PORT.
-- Program: `FileSyncAPI.exe`
+- TCP: Allow inbound traffic on all ports to FileSyncAPI.exe.
+- UDP: Allow inbound traffic on all ports to FileSyncAPI.exe.
 
-To help you diagnose connection issues, turn on Advanced Logging for the Windows Firewall to capture both types of actions: `Allow` and `Block`. Review the log after running the Client and Server to see if any traffic is being blocked.
+You will need to enter the full path to `FileSyncApi.exe` in the rule configuration.
+
+Diagnose connection issues:
+
+1. Turn on Advanced Logging for the Windows Firewall to capture both types of actions: `Allow` and `Block`. 
+2. Run the Client and Server until data is passed from Client to Server.
+3. Review the log to see if any traffic is being blocked.
 
 ## Project Structure
 
@@ -147,6 +153,9 @@ See SwaggerUI in Debug mode for an interactive Schema and example.
 - Caliburn.Micro v3.2.0
 - Swashbuckle.AspNetCore (Swagger) v6.5.0
 - Newtonsoft.Json v13.0.0.0
+- Build tools (Visual Studio 2022 or later)
+- Dot NET Framework 4.7 (for Desktop and user interface)
+- ASP.NET Core 6.0 (for Web API)
 
 NuGet Package Mappings might be required to successfully restore packages.
 
@@ -154,11 +163,19 @@ See Project Properties and References in the Solution Explorer tree or in the Pr
 
 ### Build
 
-- Build tools (Visual Studio 2022 or later)
-- Dot NET Framework 4.7 (for Desktop and user interface)
-- ASP.NET Core 6.0 (for Web API)
-- Set Startup Configuration following the instructions in the [Startup](#startup) section below.
-- Refresh NuGet packages is _required_ to build and debug the solution.
+1. Clone the repository.
+1. Open the solution in Visual Studio 2022 or later.
+1. Configure Solution Startup to Multiple. See the [Startup](#startup) section below.
+1. Build the solution for "Any CPU".
+
+### Publish
+
+1. Right-click and Publish project FileSyncAPI to a Folder. Don't forget to click the PUBLISH button at the end of the configuration wizard.
+1. Right-click and Publish project FileSyncDesktop to a Folder. De-select the option to automatically check for updates.
+1. Execute Setup.exe to install FileSyncDesktop. The App automatically launches but will be available on the Start Menu.
+1. Execute FileSyncAPI.exe in the publish folder to launch the Server.
+
+Note: You can also choose to publish the API to a web server but that is not required for this project.
 
 ### Startup
 
@@ -168,29 +185,25 @@ Since this is a multi-project solution, the Startup configuration must be done i
 2. FileSyncDesktop.Library (Dot NET Library)
 3. FileSyncDesktop (WPF)
 
-### Usage
-
-1. Build the project.
-1. Either Run in Visual Studio Debug mode, or run the EXE file directly ensuring any DLLs are in the same path as the EXE for example all within 'bin/debug' directory.
-1. Desktop UI: Enter the filepath where messages are stored, and the server IP address (or 'localhost') and click SET.
-1. Desktop UI: Click START Monitoring Files button to trigger the File Monitoring process.
-1. Copy files with (and without) valid and invalid bib number entries into the configured PATH.
-1. Review the Files Detected window to see the detected file names.
-1. Review the Log file to see the results of the File Monitoring process including errors, notification, and bib numbers.
-
 ### Environment Variables
 
-This feature will be supported in the MVP and, depending on feedback, may be retained in the final product.
+This feature will be supported in the MVP and, depending on feedback, may be used in v.1 of the App.
+
+Create new System-level Environment Variables using PowerShell or the Windows Control Panel.
+
+When done, the variables should look something like this:
 
 ```powershell
 > dir env:
 ...
-FSW_FILEPATH                   D:\filemon\messages
+FSW_FILEPATH                   C:\Winlink Express\N0CAL\Messages
 FSW_FILETYPE                   *.mime
-FSW_SERVERADDR                 "localhost"
-FSW_SERVERPORT                 5001
+FSW_SERVERADDR                 localhost
+FSW_SERVERPORT                 5000
 ...
 ```
+
+When you launch the App, click the LOAD button to import the variables into the App, then click SET to apply them. Once set, click OPEN FILE MONITOR to initialize the file monitoring system.
 
 ## Implemented Features
 
